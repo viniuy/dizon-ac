@@ -17,6 +17,10 @@
   --radius-lg:  var(--radius);
   --radius-xl:  calc(var(--radius) * 1.4);
 
+  --color-border: var(--border);
+  --color-input:  var(--input);
+  --color-ring:   var(--ring);
+
   /* Dizon AC color tokens → Tailwind utilities */
   --color-dac-bg:           #060e1a;
   --color-dac-surface:      #0d1b2a;
@@ -147,7 +151,10 @@ html.light {
 
 /* ── Base ─────────────────────────────────────────────────────────────────── */
 @layer base {
-  * { @apply border-border outline-ring/50; }
+  * {
+    border-color: var(--border);
+    outline-color: color-mix(in oklch, var(--ring) 50%, transparent);
+  }
 
   html { scroll-behavior: smooth; }
 
