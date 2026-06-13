@@ -1,53 +1,36 @@
 @import "tailwindcss";
 @import "tw-animate-css";
-@import "shadcn/tailwind.css";
 
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-sans);
-  --font-mono: var(--font-geist-mono);
-  --font-heading: var(--font-sans);
-  --color-sidebar-ring: var(--sidebar-ring);
-  --color-sidebar-border: var(--sidebar-border);
-  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
-  --color-sidebar-accent: var(--sidebar-accent);
-  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
-  --color-sidebar-primary: var(--sidebar-primary);
-  --color-sidebar-foreground: var(--sidebar-foreground);
-  --color-sidebar: var(--sidebar);
-  --color-chart-5: var(--chart-5);
-  --color-chart-4: var(--chart-4);
-  --color-chart-3: var(--chart-3);
-  --color-chart-2: var(--chart-2);
-  --color-chart-1: var(--chart-1);
-  --color-ring: var(--ring);
-  --color-input: var(--input);
-  --color-border: var(--border);
-  --color-destructive: var(--destructive);
-  --color-accent-foreground: var(--accent-foreground);
-  --color-accent: var(--accent);
-  --color-muted-foreground: var(--muted-foreground);
-  --color-muted: var(--muted);
-  --color-secondary-foreground: var(--secondary-foreground);
-  --color-secondary: var(--secondary);
-  --color-primary-foreground: var(--primary-foreground);
-  --color-primary: var(--primary);
-  --color-popover-foreground: var(--popover-foreground);
-  --color-popover: var(--popover);
-  --color-card-foreground: var(--card-foreground);
-  --color-card: var(--card);
-  --radius-sm: calc(var(--radius) * 0.6);
-  --radius-md: calc(var(--radius) * 0.8);
-  --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) * 1.4);
-  --radius-2xl: calc(var(--radius) * 1.8);
-  --radius-3xl: calc(var(--radius) * 2.2);
-  --radius-4xl: calc(var(--radius) * 2.6);
+  --font-sans:    var(--font-figtree);
+  --font-mono:    var(--font-geist-mono);
+  --font-syne:    var(--font-syne);
+  --font-figtree: var(--font-figtree);
+
+  /* shadcn radius */
+  --radius-sm:  calc(var(--radius) * 0.6);
+  --radius-md:  calc(var(--radius) * 0.8);
+  --radius-lg:  var(--radius);
+  --radius-xl:  calc(var(--radius) * 1.4);
+
+  /* Dizon AC color tokens → Tailwind utilities */
+  --color-dac-bg:           #060e1a;
+  --color-dac-surface:      #0d1b2a;
+  --color-dac-surface-2:    #132236;
+  --color-dac-accent:       #38bdf8;
+  --color-dac-accent-dark:  #0ea5e9;
+  --color-dac-warm:         #f59e0b;
+  --color-dac-warm-dark:    #d97706;
+  --color-dac-text:         #f0f9ff;
+  --color-dac-muted:        #94a3b8;
+  --color-dac-dim:          #4a6585;
 }
 
+/* ── shadcn base ─────────────────────────────────────────────────────────── */
 :root {
   --background: oklch(1 0 0);
   --foreground: oklch(0.148 0.004 228.8);
@@ -67,64 +50,312 @@
   --border: oklch(0.925 0.005 214.3);
   --input: oklch(0.925 0.005 214.3);
   --ring: oklch(0.723 0.014 214.4);
-  --chart-1: oklch(0.865 0.127 207.078);
-  --chart-2: oklch(0.715 0.143 215.221);
-  --chart-3: oklch(0.609 0.126 221.723);
-  --chart-4: oklch(0.52 0.105 223.128);
-  --chart-5: oklch(0.45 0.085 224.283);
   --radius: 0.625rem;
-  --sidebar: oklch(0.987 0.002 197.1);
-  --sidebar-foreground: oklch(0.148 0.004 228.8);
-  --sidebar-primary: oklch(0.609 0.126 221.723);
-  --sidebar-primary-foreground: oklch(0.984 0.019 200.873);
-  --sidebar-accent: oklch(0.963 0.002 197.1);
-  --sidebar-accent-foreground: oklch(0.218 0.008 223.9);
-  --sidebar-border: oklch(0.925 0.005 214.3);
-  --sidebar-ring: oklch(0.723 0.014 214.4);
 }
 
-.dark {
-  --background: oklch(0.148 0.004 228.8);
-  --foreground: oklch(0.987 0.002 197.1);
-  --card: oklch(0.218 0.008 223.9);
-  --card-foreground: oklch(0.987 0.002 197.1);
-  --popover: oklch(0.218 0.008 223.9);
-  --popover-foreground: oklch(0.987 0.002 197.1);
-  --primary: oklch(0.45 0.085 224.283);
-  --primary-foreground: oklch(0.984 0.019 200.873);
-  --secondary: oklch(0.274 0.006 286.033);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.275 0.011 216.9);
-  --muted-foreground: oklch(0.723 0.014 214.4);
-  --accent: oklch(0.275 0.011 216.9);
-  --accent-foreground: oklch(0.987 0.002 197.1);
-  --destructive: oklch(0.704 0.191 22.216);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.56 0.021 213.5);
-  --chart-1: oklch(0.865 0.127 207.078);
-  --chart-2: oklch(0.715 0.143 215.221);
-  --chart-3: oklch(0.609 0.126 221.723);
-  --chart-4: oklch(0.52 0.105 223.128);
-  --chart-5: oklch(0.45 0.085 224.283);
-  --sidebar: oklch(0.218 0.008 223.9);
-  --sidebar-foreground: oklch(0.987 0.002 197.1);
-  --sidebar-primary: oklch(0.715 0.143 215.221);
-  --sidebar-primary-foreground: oklch(0.302 0.056 229.695);
-  --sidebar-accent: oklch(0.275 0.011 216.9);
-  --sidebar-accent-foreground: oklch(0.987 0.002 197.1);
-  --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.56 0.021 213.5);
+/* ═══════════════════════════════════════════════════════════════════════════
+   DARK THEME (default)
+   ═══════════════════════════════════════════════════════════════════════════ */
+:root {
+  /* Palette */
+  --dac-bg:             #060e1a;
+  --dac-surface:        #0d1b2a;
+  --dac-surface-2:      #132236;
+  --dac-glass:          rgba(13, 27, 42, 0.55);
+  --dac-glass-2:        rgba(13, 27, 42, 0.82);
+
+  --dac-accent:         #38bdf8;
+  --dac-accent-dark:    #0ea5e9;
+  --dac-warm:           #f59e0b;
+  --dac-warm-dark:      #d97706;
+
+  --dac-border:         rgba(56, 189, 248, 0.14);
+  --dac-border-hi:      rgba(56, 189, 248, 0.32);
+  --dac-accent-pale:    rgba(56, 189, 248, 0.10);
+  --dac-accent-glow:    rgba(56, 189, 248, 0.28);
+  --dac-warm-pale:      rgba(245, 158, 11, 0.12);
+
+  --dac-text:           #f0f9ff;
+  --dac-muted:          #94a3b8;
+  --dac-dim:            #4a6585;
+
+  /* ── Semantic component tokens ─────────────────────────────────────────── */
+  /* Use these in inline styles so theme switching works automatically */
+  --dac-card:           rgba(13, 27, 42, 0.55);
+  --dac-card-dense:     rgba(13, 27, 42, 0.70);
+  --dac-card-solid:     rgba(13, 27, 42, 0.85);
+  --dac-nav-bg-scroll:  rgba(6, 14, 26, 0.96);
+  --dac-nav-bg-top:     rgba(6, 14, 26, 0.75);
+  --dac-menu-bg:        rgba(6, 14, 26, 0.97);
+  --dac-chip:           rgba(13, 27, 42, 0.80);
+  --dac-input-bg:       rgba(6, 14, 26, 0.70);
+  --dac-map-overlay:    rgba(6, 14, 26, 0.85);
 }
 
+/* ═══════════════════════════════════════════════════════════════════════════
+   LIGHT THEME
+   Applied via `html.light` class (toggled by ThemeToggle in Navbar)
+   ═══════════════════════════════════════════════════════════════════════════ */
+html.light {
+  /* Palette */
+  --dac-bg:             #eef5ff;
+  --dac-surface:        #ffffff;
+  --dac-surface-2:      #ddeaf8;
+  --dac-glass:          rgba(255, 255, 255, 0.72);
+  --dac-glass-2:        rgba(255, 255, 255, 0.92);
+
+  --dac-accent:         #0284c7;
+  --dac-accent-dark:    #0369a1;
+  --dac-warm:           #b45309;
+  --dac-warm-dark:      #92400e;
+
+  --dac-border:         rgba(2, 132, 199, 0.18);
+  --dac-border-hi:      rgba(2, 132, 199, 0.40);
+  --dac-accent-pale:    rgba(2, 132, 199, 0.09);
+  --dac-accent-glow:    rgba(2, 132, 199, 0.22);
+  --dac-warm-pale:      rgba(180, 83, 9, 0.09);
+
+  --dac-text:           #0c1a2e;
+  --dac-muted:          #3d5166;
+  --dac-dim:            #7a90a8;
+
+  /* Semantic component tokens */
+  --dac-card:           rgba(255, 255, 255, 0.75);
+  --dac-card-dense:     rgba(255, 255, 255, 0.90);
+  --dac-card-solid:     rgba(255, 255, 255, 0.97);
+  --dac-nav-bg-scroll:  rgba(238, 245, 255, 0.97);
+  --dac-nav-bg-top:     rgba(238, 245, 255, 0.80);
+  --dac-menu-bg:        rgba(238, 245, 255, 0.99);
+  --dac-chip:           rgba(255, 255, 255, 0.88);
+  --dac-input-bg:       rgba(255, 255, 255, 0.80);
+  --dac-map-overlay:    rgba(238, 245, 255, 0.90);
+}
+
+/* ── Tailwind color tokens update for light mode ──────────────────────────
+   These shadow the @theme values when html.light is set               */
+html.light {
+  --color-dac-bg:          #eef5ff;
+  --color-dac-surface:     #ffffff;
+  --color-dac-accent:      #0284c7;
+  --color-dac-accent-dark: #0369a1;
+  --color-dac-warm:        #b45309;
+  --color-dac-warm-dark:   #92400e;
+  --color-dac-text:        #0c1a2e;
+  --color-dac-muted:       #3d5166;
+  --color-dac-dim:         #7a90a8;
+}
+
+/* ── Base ─────────────────────────────────────────────────────────────────── */
 @layer base {
-  * {
-    @apply border-border outline-ring/50;
-  }
+  * { @apply border-border outline-ring/50; }
+
+  html { scroll-behavior: smooth; }
+
   body {
-    @apply bg-background text-foreground;
+    background-color: var(--dac-bg);
+    color: var(--dac-text);
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    transition: background-color 0.3s ease, color 0.3s ease;
   }
-  html {
-    @apply font-sans;
+}
+
+/* ── Scrollbar ────────────────────────────────────────────────────────────── */
+::-webkit-scrollbar        { width: 4px; }
+::-webkit-scrollbar-track  { background: var(--dac-bg); }
+::-webkit-scrollbar-thumb  { background: var(--dac-surface-2); border-radius: 999px; }
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   COMPONENT CLASSES
+   ═══════════════════════════════════════════════════════════════════════════ */
+@layer components {
+
+  .glass-card {
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    background: var(--dac-glass);
+    border: 1px solid var(--dac-border);
+  }
+
+  .glass-card-hi {
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    background: var(--dac-glass-2);
+    border: 1px solid var(--dac-border-hi);
+  }
+
+  .section-eyebrow {
+    color: var(--dac-accent);
+    font-size: 0.6875rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+    margin-bottom: 0.875rem;
+    font-family: var(--font-figtree);
+  }
+
+  .section-title {
+    font-family: var(--font-syne);
+    font-weight: 700;
+    line-height: 1.1;
+    letter-spacing: -0.025em;
+    color: var(--dac-text);
+    font-size: clamp(2rem, 4.5vw, 3.25rem);
+  }
+
+  .section-sub {
+    color: var(--dac-muted);
+    line-height: 1.72;
+    font-size: clamp(0.9375rem, 2vw, 1.0625rem);
+  }
+
+  /* Primary CTA — warm amber */
+  .dac-btn-primary {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    border-radius: 10px;
+    background: var(--dac-warm);
+    color: #fff8f0;
+    font-family: var(--font-syne);
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    padding: 0.875rem 1.875rem;
+    font-size: 0.9375rem;
+    text-decoration: none;
+  }
+  .dac-btn-primary:hover {
+    background: var(--dac-warm-dark);
+    transform: translateY(-1px);
+    box-shadow: 0 10px 24px rgba(180, 83, 9, 0.3);
+  }
+
+  /* Secondary CTA — outline */
+  .dac-btn-outline {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    border-radius: 10px;
+    border: 1px solid var(--dac-border-hi);
+    background: transparent;
+    color: var(--dac-text);
+    font-family: var(--font-syne);
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    padding: 0.875rem 1.875rem;
+    font-size: 0.9375rem;
+    text-decoration: none;
+  }
+  .dac-btn-outline:hover {
+    background: var(--dac-accent-pale);
+    border-color: var(--dac-accent);
+    color: var(--dac-accent);
+  }
+
+  /* Inputs */
+  .dac-input {
+    width: 100%;
+    border-radius: 10px;
+    padding: 0.75rem 1rem;
+    font-size: 0.9375rem;
+    font-family: var(--font-figtree);
+    color: var(--dac-text);
+    background: var(--dac-input-bg);
+    border: 1px solid var(--dac-border);
+    outline: none;
+    transition: border-color 0.2s, background 0.3s;
+  }
+  .dac-input:focus     { border-color: var(--dac-border-hi); }
+  .dac-input::placeholder { color: var(--dac-dim); }
+
+  /* Theme toggle button */
+  .theme-toggle {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--dac-accent-pale);
+    border: 1px solid var(--dac-border);
+    color: var(--dac-muted);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+  }
+  .theme-toggle:hover {
+    background: var(--dac-accent-pale);
+    border-color: var(--dac-accent);
+    color: var(--dac-accent);
+  }
+}
+
+/* ── Air-flow lines ──────────────────────────────────────────────────────── */
+.air-line {
+  position: absolute;
+  left: -10%;
+  width: 120%;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(56, 189, 248, 0.06) 40%,
+    rgba(56, 189, 248, 0.12) 60%,
+    transparent 100%
+  );
+  animation: air-flow var(--flow-d, 8s) linear infinite var(--flow-dl, 0s);
+  top: var(--flow-t, 30%);
+}
+html.light .air-line {
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(2, 132, 199, 0.05) 40%,
+    rgba(2, 132, 199, 0.10) 60%,
+    transparent 100%
+  );
+}
+
+/* ── Animations ──────────────────────────────────────────────────────────── */
+@keyframes air-flow {
+  from { transform: translateX(-20%); opacity: 0; }
+  10%  { opacity: 1; }
+  90%  { opacity: 1; }
+  to   { transform: translateX(20%);  opacity: 0; }
+}
+
+@keyframes logo-pulse {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.4; }
+}
+
+@keyframes float-a {
+  0%, 100% { transform: translateY(0px);   }
+  50%       { transform: translateY(-8px);  }
+}
+
+@keyframes dac-ping {
+  0%   { transform: scale(1);   opacity: 0.7; }
+  100% { transform: scale(2.5); opacity: 0;   }
+}
+
+.animate-logo-pulse { animation: logo-pulse 3s ease-in-out infinite; }
+.animate-float-a    { animation: float-a 6s ease-in-out infinite; }
+.pulse-ring         { animation: dac-ping 2.5s ease-out infinite; }
+.pulse-ring-2       { animation: dac-ping 2.5s ease-out infinite 0.8s; }
+
+/* ── Mapbox ──────────────────────────────────────────────────────────────── */
+.mapboxgl-ctrl-logo,
+.mapboxgl-ctrl-attrib { display: none !important; }
+
+/* ── Reduced motion ──────────────────────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
   }
 }
