@@ -1,49 +1,73 @@
+import { MotionRoot } from '@/components/motion/MotionRoot'
 import {
   Navbar,
   HeroSection,
   ServicesSection,
-  BeforeAfterSection,
-  GallerySection,
-  WhyChooseSection,
-  MapSection,
+  ValuesSection,
+  StepsSection,
+  MaintenanceSection,
+  BrandsSection,
+  GuaranteeSection,
+  WorkSection,
+  CoverageSection,
   ReviewsSection,
-  ContactSection,
+  FaqSection,
+  BookSection,
+  FinalCta,
   LandingFooter,
+  ContactButton,
 } from '@/components/landing'
 
+// Section order follows teko.ph, with Dizon's own work, coverage and booking added
 export default function LandingPage() {
   return (
-    <>
-      {/* ── Fixed navigation ───────────────────────────── */}
+    <MotionRoot>
+      {/* ── Sticky header: click-to-call + Book, hides on scroll down ── */}
       <Navbar />
 
       <main>
-        {/* 1 — Hero: headline, phone numbers, stats */}
+        {/* 1 — Hero: cinematic carousel (cleaning / repair / installation) */}
         <HeroSection />
 
-        {/* 2 — Services: interactive selector panel */}
+        {/* 2 — On-site services: interactive tiles + detail panel */}
         <ServicesSection />
 
-        {/* 3 — Before & After: drag slider comparison */}
-        <BeforeAfterSection />
+        {/* 3 — We stand behind our work */}
+        <ValuesSection />
 
-        {/* 4 — Gallery: photo showcase */}
-        <GallerySection />
+        {/* 4 — How booking works: scroll-drawn timeline */}
+        <StepsSection />
 
-        {/* 5 — Why Choose: 2-col layout */}
-        <WhyChooseSection />
+        {/* 5 — Maintenance (PMS) plan */}
+        <MaintenanceSection />
 
-        {/* 6 — Map: Mapbox, Bambang Taguig */}
-        <MapSection />
+        {/* 6 — All brands serviced: marquee */}
+        <BrandsSection />
 
-        {/* 7 — Reviews: customer testimonials */}
+        {/* 7 — Our guarantee */}
+        <GuaranteeSection />
+
+        {/* 8 — Our work: pinned horizontal reel on desktop */}
+        <WorkSection />
+
+        {/* 9 — Coverage radar */}
+        <CoverageSection />
+
+        {/* 10 — Reviews (hidden until real reviews are added) */}
         <ReviewsSection />
 
-        {/* 8 — Contact: phones + booking form */}
-        <ContactSection />
+        {/* 11 — FAQ */}
+        <FaqSection />
+
+        {/* 12 — Booking form */}
+        <BookSection />
+
+        {/* 13 — Final call to action */}
+        <FinalCta />
       </main>
 
       <LandingFooter />
-    </>
+      <ContactButton />
+    </MotionRoot>
   )
 }

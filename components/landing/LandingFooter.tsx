@@ -1,165 +1,67 @@
-import Link from 'next/link'
-import { FOOTER_LINKS, PHONE_NUMBERS } from './landing.data'
-
-const SOCIAL = [
-  {
-    label: 'Facebook',
-    href: '#',
-    icon: (
-      <svg viewBox="0 0 24 24" className="w-4 h-4" fill="none" stroke="currentColor"
-           strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/>
-      </svg>
-    ),
-  },
-  {
-    label: 'Instagram',
-    href: '#',
-    icon: (
-      <svg viewBox="0 0 24 24" className="w-4 h-4" fill="none" stroke="currentColor"
-           strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-        <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
-        <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/>
-        <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/>
-      </svg>
-    ),
-  },
-] as const
+import { RiMailFill, RiMapPin2Fill, RiPhoneFill, RiTimeFill } from '@remixicon/react'
+import { BUSINESS, FOOTER_LINKS, PHONE_NUMBERS } from './landing.data'
+import { Logo } from './Navbar'
 
 export function LandingFooter() {
   return (
-    <footer
-      className="relative z-[1]"
-      style={{
-        background: 'rgba(7,16,28,0.98)',
-        borderTop: '1px solid rgba(56,189,248,0.1)',
-      }}
-    >
-      <div
-        className="max-w-[1120px] mx-auto
-                   px-[clamp(1.25rem,5vw,3rem)]
-                   pt-[clamp(3rem,6vh,5rem)] pb-8"
-      >
-        {/* Top row */}
-        <div
-          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-[2fr_1fr_1fr_1fr]
-                     gap-[clamp(2rem,4vw,3.5rem)] mb-12"
-        >
-          {/* Brand col */}
-          <div>
-            <a
-              href="#hero"
-              className="inline-flex items-center gap-2 font-syne font-extrabold
-                         tracking-[-0.025em] text-dac-text mb-4"
-              style={{ fontSize: '1.1rem' }}
-            >
-              <span
-                className="w-[7px] h-[7px] rounded-full bg-dac-accent animate-logo-pulse"
-                style={{ boxShadow: '0 0 8px rgba(56,189,248,0.8)' }}
-              />
-              DIZON <span className="text-dac-accent">AC</span>
-            </a>
-
-            <p
-              className="text-dac-muted font-figtree text-sm leading-[1.7] mb-5"
-              style={{ maxWidth: 240 }}
-            >
-              Professional airconditioning &amp; refrigeration services. Trusted by
-              thousands of homes and businesses across Metro Manila.
-            </p>
-
-            {/* Quick phones */}
-            <div className="flex flex-col gap-1.5 mb-5">
-              {PHONE_NUMBERS.slice(0, 2).map(({ network, number, href }) => (
-                <a
-                  key={number}
-                  href={href}
-                  className="text-dac-muted text-sm font-figtree hover:text-dac-accent
-                             transition-colors duration-150 flex items-center gap-2"
-                >
-                  <span
-                    className="w-[5px] h-[5px] rounded-full flex-shrink-0"
-                    style={{ background: '#38bdf8' }}
-                  />
-                  {number}
-                  <span className="text-dac-dim text-xs">· {network}</span>
-                </a>
-              ))}
-            </div>
-
-            {/* Social */}
-            <div className="flex gap-2">
-              {SOCIAL.map(({ label, href, icon }) => (
-                <a
-                  key={label}
-                  href={href}
-                  aria-label={label}
-                  className="w-9 h-9 rounded-lg flex items-center justify-center
-                             text-dac-muted transition-all duration-200 hover:text-dac-accent"
-                  style={{
-                    background: 'rgba(56,189,248,0.06)',
-                    border: '1px solid rgba(56,189,248,0.12)',
-                  }}
-                >
-                  {icon}
-                </a>
-              ))}
-            </div>
-          </div>
-
-          {/* Link columns */}
-          {(
-            Object.entries(FOOTER_LINKS) as [
-              string,
-              readonly { label: string; href: string; accent?: boolean }[],
-            ][]
-          ).map(([heading, links]) => (
-            <div key={heading}>
-              <h4 className="font-syne font-bold text-dac-text text-sm mb-5 tracking-[-0.01em]">
-                {heading}
-              </h4>
-              <ul className="flex flex-col gap-2.5">
-                {links.map(({ label, href, accent }) => (
-                  <li key={label}>
-                    <Link
-                      href={href}
-                      className={`text-sm font-figtree transition-colors duration-150 ${
-                        accent
-                          ? 'text-dac-accent hover:text-dac-accent-dark'
-                          : 'text-dac-muted hover:text-dac-text'
-                      }`}
-                    >
-                      {label}
-                    </Link>
-                  </li>
+    <footer className="overflow-hidden bg-dac-blue pt-14 text-white">
+      <div className="mx-auto grid max-w-6xl gap-10 px-5 md:grid-cols-[1.5fr_1fr_1fr_1fr]">
+        <div>
+          <Logo inverted />
+          <p className="mt-4 max-w-xs text-[15px] leading-relaxed text-white/90">{BUSINESS.about}</p>
+          <ul className="mt-6 space-y-2 text-[15px] text-white/90">
+            <li className="flex gap-2">
+              <RiPhoneFill className="mt-1 size-4 shrink-0" aria-hidden />
+              <span>
+                {PHONE_NUMBERS.map(({ number, href }, i) => (
+                  <span key={number}>
+                    {i > 0 && ' · '}
+                    <a href={href} className="hover:underline">{number}</a>
+                  </span>
                 ))}
-              </ul>
-            </div>
-          ))}
+              </span>
+            </li>
+            <li className="flex gap-2">
+              <RiMailFill className="mt-1 size-4 shrink-0" aria-hidden />
+              <a href={`mailto:${BUSINESS.email}`} className="break-all hover:underline">{BUSINESS.email}</a>
+            </li>
+            <li className="flex gap-2">
+              <RiMapPin2Fill className="mt-1 size-4 shrink-0" aria-hidden />
+              {BUSINESS.address}
+            </li>
+            <li className="flex gap-2">
+              <RiTimeFill className="mt-1 size-4 shrink-0" aria-hidden />
+              {BUSINESS.hours}
+            </li>
+          </ul>
         </div>
 
-        {/* Bottom bar */}
-        <div
-          className="flex flex-wrap justify-between items-center gap-3 pt-6"
-          style={{ borderTop: '1px solid rgba(56,189,248,0.08)' }}
-        >
-          <span className="text-dac-dim text-xs font-figtree">
-            © {new Date().getFullYear()} Dizon Aircon &amp; Refrigeration Services.
-            All rights reserved.
-          </span>
-          <div className="flex items-center gap-4">
-            <span className="text-dac-dim text-xs font-figtree">
-              Bambang, Taguig, Philippines
-            </span>
-            <Link
-              href="/login"
-              className="text-dac-dim text-xs font-figtree hover:text-dac-muted
-                         transition-colors duration-150"
-            >
-              Staff Login
-            </Link>
+        {Object.entries(FOOTER_LINKS).map(([section, links]) => (
+          <div key={section}>
+            <h2 className="font-semibold">{section}</h2>
+            <ul className="mt-4 space-y-3 text-[15px] text-white/90">
+              {links.map(link => (
+                <li key={link.label}>
+                  <a href={link.href} className="hover:underline">{link.label}</a>
+                </li>
+              ))}
+            </ul>
           </div>
-        </div>
+        ))}
+      </div>
+
+      <div className="mx-auto mt-12 max-w-6xl border-t border-white/15 px-5 pt-6 text-sm text-white/90">
+        <p>© {new Date().getFullYear()} {BUSINESS.name}</p>
+      </div>
+
+      {/* Oversized wordmark, cropped by the footer's bottom edge */}
+      <div aria-hidden className="mt-10 overflow-hidden">
+        <p
+          data-split
+          className="-mb-[0.22em] text-center text-[clamp(6rem,26vw,22rem)] leading-none font-extrabold tracking-[-0.06em] text-white/10 select-none"
+        >
+          dizon<span className="text-dac-amber/40">.</span>
+        </p>
       </div>
     </footer>
   )

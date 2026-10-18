@@ -1,241 +1,209 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
+import { RiArrowRightLine, RiCloseLine, RiPhoneFill } from '@remixicon/react'
+import { BUSINESS, NAV_LINKS } from './landing.data'
 
-const NAV_LINKS = [
-  { label: 'Services', href: '#services' },
-  { label: 'Our Work', href: '#gallery'  },
-  { label: 'Coverage', href: '#map'      },
-  { label: 'Reviews',  href: '#reviews'  },
-  { label: 'Contact',  href: '#contact'  },
-] as const
-
-// ── Theme toggle ──────────────────────────────────────────────────────────────
-function ThemeToggle() {
-  const [isLight, setIsLight] = useState(false)
-
-  useEffect(() => {
-    setIsLight(document.documentElement.classList.contains('light'))
-  }, [])
-
-  const toggle = () => {
-    const html = document.documentElement
-    if (html.classList.contains('light')) {
-      html.classList.remove('light')
-      localStorage.setItem('dac-theme', 'dark')
-      setIsLight(false)
-    } else {
-      html.classList.add('light')
-      localStorage.setItem('dac-theme', 'light')
-      setIsLight(true)
-    }
-  }
-
+export function Logo({ inverted = false }: { inverted?: boolean }) {
   return (
-    <button
-      onClick={toggle}
-      className="theme-toggle"
-      aria-label={isLight ? 'Switch to dark mode' : 'Switch to light mode'}
-      title={isLight ? 'Dark mode' : 'Light mode'}
+    <span
+      className={`text-[2rem] leading-none font-bold tracking-[-0.04em] ${inverted ? 'text-white' : 'text-dac-bright'}`}
     >
-      {isLight ? (
-        // Moon icon — click to go dark
-        <svg viewBox="0 0 24 24" className="w-4 h-4" fill="none" stroke="currentColor"
-             strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
-        </svg>
-      ) : (
-        // Sun icon — click to go light
-        <svg viewBox="0 0 24 24" className="w-4 h-4" fill="none" stroke="currentColor"
-             strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-          <circle cx="12" cy="12" r="5"/>
-          <line x1="12" y1="1"  x2="12" y2="3"/>
-          <line x1="12" y1="21" x2="12" y2="23"/>
-          <line x1="4.22" y1="4.22"  x2="5.64" y2="5.64"/>
-          <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
-          <line x1="1"  y1="12" x2="3"  y2="12"/>
-          <line x1="21" y1="12" x2="23" y2="12"/>
-          <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
-          <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
-        </svg>
-      )}
-    </button>
+      dizon<span className="text-dac-amber">.</span>
+    </span>
   )
 }
 
-// ── Navbar ────────────────────────────────────────────────────────────────────
-export function Navbar() {
-  const [scrolled,  setScrolled]  = useState(false)
-  const [menuOpen,  setMenuOpen]  = useState(false)
+type Pill = { left: number; width: number; visible: boolean }
 
+export function Navbar() {
+  const [open, setOpen] = useState(false)
+  const [scrolled, setScrolled] = useState(false)
+  const [current, setCurrent] = useState<string | null>(null)
+  const [pill, setPill] = useState<Pill>({ left: 0, width: 0, visible: false })
+  const listRef = useRef<HTMLUListElement>(null)
+
+  // Condense into the floating bar once the page moves
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 48)
+    const onScroll = () => setScrolled(window.scrollY > 24)
+    onScroll()
     window.addEventListener('scroll', onScroll, { passive: true })
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
 
-  const closeMenu = () => setMenuOpen(false)
+  // Track which section is in the middle of the viewport
+  useEffect(() => {
+    const sections = NAV_LINKS
+      .map(l => document.querySelector<HTMLElement>(l.href))
+      .filter((el): el is HTMLElement => el !== null)
+    const io = new IntersectionObserver(
+      entries => entries.forEach(e => { if (e.isIntersecting) setCurrent(`#${e.target.id}`) }),
+      { rootMargin: '-45% 0px -50% 0px' },
+    )
+    sections.forEach(s => io.observe(s))
+    return () => io.disconnect()
+  }, [])
+
+  // Highlight follows the hovered link, otherwise rests on the current section
+  const moveTo = (href: string | null) => {
+    const el = href ? listRef.current?.querySelector<HTMLElement>(`a[href="${href}"]`) : null
+    setPill(el ? { left: el.offsetLeft, width: el.offsetWidth, visible: true } : p => ({ ...p, visible: false }))
+  }
+  useEffect(() => { moveTo(current) }, [current])
+
+  // Full-screen mobile menu: lock page scroll, close on Escape
+  useEffect(() => {
+    if (!open) return
+    const html = document.documentElement
+    html.style.overflow = 'hidden'
+    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') setOpen(false) }
+    document.addEventListener('keydown', onKey)
+    return () => {
+      html.style.overflow = ''
+      document.removeEventListener('keydown', onKey)
+    }
+  }, [open])
 
   return (
     <>
-      <nav
-        className="fixed top-0 left-0 right-0 z-50 transition-all duration-300"
-        style={{
-          height: 64,
-          display: 'flex',
-          alignItems: 'center',
-          paddingInline: 'clamp(1.25rem, 5vw, 3rem)',
-          background: scrolled
-            ? 'var(--dac-nav-bg-scroll)'
-            : 'var(--dac-nav-bg-top)',
-          backdropFilter: 'blur(20px)',
-          WebkitBackdropFilter: 'blur(20px)',
-          borderBottom: scrolled
-            ? '1px solid var(--dac-border)'
-            : '1px solid transparent',
-          transition: 'background 0.3s ease, border-color 0.3s ease',
-        }}
-      >
-        {/* Logo */}
-        <a
-          href="#hero"
-          className="flex items-center gap-2 font-syne font-bold text-dac-text"
-          style={{ fontSize: '1.075rem', letterSpacing: '-0.015em' }}
-          aria-label="Dizon AC home"
+      {/* data-hero-nav: hidden until the hero entrance brings it in (see HeroSection) */}
+      <header data-hero-nav className="fixed inset-x-0 top-0 z-40 px-3 pt-3 sm:px-5">
+        <div
+          className={`mx-auto flex max-w-6xl items-center gap-6 rounded-full border transition-all duration-500 ease-[cubic-bezier(.2,.8,.2,1)] ${
+            scrolled
+              ? 'h-[60px] border-black/[0.06] bg-white/80 pr-2 pl-5 shadow-[0_8px_30px_-12px_rgb(0_0_0/0.18)] backdrop-blur-xl'
+              : 'h-[72px] border-transparent bg-transparent px-2'
+          }`}
         >
-          <span
-            className="w-[7px] h-[7px] rounded-full bg-dac-accent animate-logo-pulse"
-            style={{ boxShadow: '0 0 8px var(--dac-accent-glow)' }}
-          />
-          DIZON <span className="text-dac-accent">AC</span>
-        </a>
+          <a href="#top" aria-label={`${BUSINESS.name} home`} className="shrink-0">
+            <Logo />
+          </a>
 
-        {/* Desktop nav links */}
-        <div className="hidden md:flex items-center gap-[clamp(1.25rem,2.5vw,2rem)] ml-auto mr-5">
-          {NAV_LINKS.map(({ label, href }) => (
-            <a
-              key={label}
-              href={href}
-              className="text-dac-muted text-sm hover:text-dac-text transition-colors duration-150 font-figtree"
+          <nav aria-label="Main" className="mx-auto hidden lg:block">
+            <ul
+              ref={listRef}
+              onMouseLeave={() => moveTo(current)}
+              className="relative flex items-center text-[14.5px]"
             >
-              {label}
-            </a>
-          ))}
-        </div>
+              <span
+                aria-hidden
+                className={`absolute inset-y-0 rounded-full bg-dac-ink/[0.06] transition-all duration-300 ease-out ${
+                  pill.visible ? 'opacity-100' : 'opacity-0'
+                }`}
+                style={{ left: pill.left, width: pill.width }}
+              />
+              {NAV_LINKS.map(link => (
+                <li key={link.href}>
+                  <a
+                    href={link.href}
+                    onMouseEnter={() => moveTo(link.href)}
+                    onFocus={() => moveTo(link.href)}
+                    aria-current={current === link.href ? 'true' : undefined}
+                    className={`relative block rounded-full px-4 py-2 transition-colors duration-300 ${
+                      current === link.href ? 'text-dac-ink' : 'text-dac-ink/60 hover:text-dac-ink'
+                    }`}
+                  >
+                    {link.label}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </nav>
 
-        {/* Desktop: theme toggle + CTA */}
-        <div className="hidden md:flex items-center gap-2.5">
-          <ThemeToggle />
-          <a
-            href="#contact"
-            className="dac-btn-primary"
-            style={{ padding: '0.5rem 1.125rem', fontSize: '0.875rem' }}
-          >
-            Book Service
-          </a>
-        </div>
-
-        {/* Mobile: theme + call + hamburger */}
-        <div className="flex md:hidden items-center gap-2 ml-auto">
-          <ThemeToggle />
-          <a
-            href="tel:+639177800051"
-            className="text-dac-accent font-syne font-bold text-sm px-2"
-            aria-label="Call us"
-          >
-            Call
-          </a>
-          <button
-            onClick={() => setMenuOpen(o => !o)}
-            className="w-9 h-9 flex flex-col items-center justify-center gap-[5px]"
-            aria-label={menuOpen ? 'Close menu' : 'Open menu'}
-            aria-expanded={menuOpen}
-          >
-            <span
-              className="block h-[1.5px] bg-dac-text transition-all duration-300 origin-center"
-              style={{
-                width: 20,
-                transform: menuOpen ? 'translateY(6.5px) rotate(45deg)' : 'none',
-              }}
-            />
-            <span
-              className="block h-[1.5px] bg-dac-text transition-all duration-200"
-              style={{ width: 13, opacity: menuOpen ? 0 : 1 }}
-            />
-            <span
-              className="block h-[1.5px] bg-dac-text transition-all duration-300 origin-center"
-              style={{
-                width: 20,
-                transform: menuOpen ? 'translateY(-6.5px) rotate(-45deg)' : 'none',
-              }}
-            />
-          </button>
-        </div>
-      </nav>
-
-      {/* Mobile menu drawer */}
-      <div
-        className="fixed inset-0 z-40 md:hidden"
-        style={{
-          pointerEvents: menuOpen ? 'auto' : 'none',
-          opacity: menuOpen ? 1 : 0,
-          background: 'var(--dac-menu-bg)',
-          backdropFilter: 'blur(24px)',
-          WebkitBackdropFilter: 'blur(24px)',
-          paddingTop: 64,
-          transition: 'opacity 0.25s ease',
-        }}
-        aria-hidden={!menuOpen}
-      >
-        <div className="flex flex-col px-8 pt-8 gap-0">
-          {NAV_LINKS.map(({ label, href }, i) => (
+          <div className="ml-auto flex items-center gap-2 lg:ml-0">
             <a
-              key={label}
-              href={href}
-              onClick={closeMenu}
-              className="font-syne font-bold text-dac-text border-b border-dac-border py-4"
-              style={{
-                fontSize: 'clamp(1.25rem, 5vw, 1.5rem)',
-                transform: menuOpen ? 'translateX(0)' : 'translateX(-14px)',
-                opacity: menuOpen ? 1 : 0,
-                transition: `transform 0.3s ease ${i * 40}ms, opacity 0.3s ease ${i * 40}ms`,
-              }}
+              href={BUSINESS.phone.href}
+              className="hidden items-center gap-2 rounded-full px-3 py-2 text-[14.5px] font-semibold text-dac-ink transition-colors hover:text-dac-blue md:flex"
             >
-              {label}
+              <RiPhoneFill className="size-4 text-dac-blue" aria-hidden />
+              {BUSINESS.phone.display}
             </a>
-          ))}
-
-          <a
-            href="#contact"
-            onClick={closeMenu}
-            className="dac-btn-primary mt-8 text-center justify-center"
-            style={{
-              transform: menuOpen ? 'translateX(0)' : 'translateX(-14px)',
-              opacity: menuOpen ? 1 : 0,
-              transition: 'transform 0.3s ease 220ms, opacity 0.3s ease 220ms',
-            }}
-          >
-            Book a Service
-          </a>
-
-          <div
-            className="mt-8 pt-6"
-            style={{ borderTop: '1px solid var(--dac-border)' }}
-          >
-            <p className="text-dac-dim text-xs mb-3 uppercase tracking-[0.12em] font-figtree">
-              Call or Text
-            </p>
-            <div className="flex flex-col gap-2">
-              <a href="tel:+639177800051" className="text-dac-accent font-syne font-semibold text-sm">
-                0917 780 0051 · Globe
-              </a>
-              <a href="tel:+639999665008" className="text-dac-accent font-syne font-semibold text-sm">
-                0999 966 5008 · Smart
-              </a>
-            </div>
+            <a
+              href="#book"
+              className="hidden rounded-full bg-dac-blue px-5 py-2.5 text-[14.5px] font-semibold text-white transition-colors duration-300 hover:bg-dac-ink sm:inline-flex"
+            >
+              Book a service
+            </a>
+            <button
+              type="button"
+              aria-expanded={open}
+              aria-controls="mobile-nav"
+              onClick={() => setOpen(true)}
+              className="flex h-11 items-center gap-2.5 rounded-full px-4 text-[14px] font-semibold text-dac-ink lg:hidden"
+            >
+              Menu
+              <span aria-hidden className="flex w-5 flex-col gap-[5px]">
+                <span className="h-0.5 w-full rounded-full bg-current" />
+                <span className="h-0.5 w-3/5 self-end rounded-full bg-current" />
+              </span>
+            </button>
           </div>
         </div>
-      </div>
+      </header>
+
+      {/* ── Mobile menu ───────────────────────────────── */}
+      {open && (
+        <div
+          id="mobile-nav"
+          role="dialog"
+          aria-modal="true"
+          aria-label="Menu"
+          data-lenis-prevent
+          className="fixed inset-0 z-[60] flex flex-col bg-white px-5 pt-3 pb-8 motion-safe:animate-[dac-fade_.3s_ease-out] lg:hidden"
+        >
+          <div className="flex h-[72px] items-center justify-between px-2">
+            <Logo />
+            <button
+              type="button"
+              onClick={() => setOpen(false)}
+              autoFocus
+              className="grid size-11 place-items-center rounded-full bg-dac-mist text-dac-ink"
+            >
+              <RiCloseLine className="size-6" aria-hidden />
+              <span className="sr-only">Close menu</span>
+            </button>
+          </div>
+
+          <nav aria-label="Mobile" className="mt-8 flex-1 px-2">
+            <ul className="space-y-1">
+              {NAV_LINKS.map((link, i) => (
+                <li
+                  key={link.href}
+                  className="motion-safe:animate-[dac-pop_.5s_ease-out_backwards]"
+                  style={{ animationDelay: `${80 + i * 50}ms` }}
+                >
+                  <a
+                    href={link.href}
+                    onClick={() => setOpen(false)}
+                    className="flex items-baseline gap-4 border-b border-black/5 py-4 text-[1.9rem] leading-none font-semibold tracking-[-0.02em] text-dac-ink"
+                  >
+                    <span className="text-xs font-semibold text-dac-ink/35 tabular-nums">0{i + 1}</span>
+                    {link.label}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </nav>
+
+          <div className="space-y-3 px-2 motion-safe:animate-[dac-pop_.5s_ease-out_.4s_backwards]">
+            <a
+              href="#book"
+              onClick={() => setOpen(false)}
+              className="flex items-center justify-between rounded-full bg-dac-blue px-6 py-4 font-semibold text-white"
+            >
+              Book a service
+              <RiArrowRightLine className="size-5" aria-hidden />
+            </a>
+            <a
+              href={BUSINESS.phone.href}
+              className="flex items-center justify-between rounded-full bg-dac-mist px-6 py-4 font-semibold text-dac-ink"
+            >
+              {BUSINESS.phone.display}
+              <RiPhoneFill className="size-5 text-dac-blue" aria-hidden />
+            </a>
+          </div>
+        </div>
+      )}
     </>
   )
 }

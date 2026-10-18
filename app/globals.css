@@ -6,10 +6,7 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans:    var(--font-figtree);
-  --font-mono:    var(--font-geist-mono);
-  --font-syne:    var(--font-syne);
-  --font-figtree: var(--font-figtree);
+  --font-sans: var(--font-open-sans);
 
   /* shadcn radius */
   --radius-sm:  calc(var(--radius) * 0.6);
@@ -21,17 +18,13 @@
   --color-input:  var(--input);
   --color-ring:   var(--ring);
 
-  /* Dizon AC color tokens → Tailwind utilities */
-  --color-dac-bg:           #060e1a;
-  --color-dac-surface:      #0d1b2a;
-  --color-dac-surface-2:    #132236;
-  --color-dac-accent:       #38bdf8;
-  --color-dac-accent-dark:  #0ea5e9;
-  --color-dac-warm:         #f59e0b;
-  --color-dac-warm-dark:    #d97706;
-  --color-dac-text:         #f0f9ff;
-  --color-dac-muted:        #94a3b8;
-  --color-dac-dim:          #4a6585;
+  /* Dizon AC palette → Tailwind utilities (bg-dac-blue, text-dac-ink, …) */
+  --color-dac-blue:   #1f6fd1;
+  --color-dac-bright: #4696ef;
+  --color-dac-amber:  #feb13b;
+  --color-dac-mist:   #f3f5f3;
+  --color-dac-ice:    #dbf4ff;
+  --color-dac-ink:    #2b3036;
 }
 
 /* ── shadcn base ─────────────────────────────────────────────────────────── */
@@ -57,98 +50,6 @@
   --radius: 0.625rem;
 }
 
-/* ═══════════════════════════════════════════════════════════════════════════
-   DARK THEME (default)
-   ═══════════════════════════════════════════════════════════════════════════ */
-:root {
-  /* Palette */
-  --dac-bg:             #060e1a;
-  --dac-surface:        #0d1b2a;
-  --dac-surface-2:      #132236;
-  --dac-glass:          rgba(13, 27, 42, 0.55);
-  --dac-glass-2:        rgba(13, 27, 42, 0.82);
-
-  --dac-accent:         #38bdf8;
-  --dac-accent-dark:    #0ea5e9;
-  --dac-warm:           #f59e0b;
-  --dac-warm-dark:      #d97706;
-
-  --dac-border:         rgba(56, 189, 248, 0.14);
-  --dac-border-hi:      rgba(56, 189, 248, 0.32);
-  --dac-accent-pale:    rgba(56, 189, 248, 0.10);
-  --dac-accent-glow:    rgba(56, 189, 248, 0.28);
-  --dac-warm-pale:      rgba(245, 158, 11, 0.12);
-
-  --dac-text:           #f0f9ff;
-  --dac-muted:          #94a3b8;
-  --dac-dim:            #4a6585;
-
-  /* ── Semantic component tokens ─────────────────────────────────────────── */
-  /* Use these in inline styles so theme switching works automatically */
-  --dac-card:           rgba(13, 27, 42, 0.55);
-  --dac-card-dense:     rgba(13, 27, 42, 0.70);
-  --dac-card-solid:     rgba(13, 27, 42, 0.85);
-  --dac-nav-bg-scroll:  rgba(6, 14, 26, 0.96);
-  --dac-nav-bg-top:     rgba(6, 14, 26, 0.75);
-  --dac-menu-bg:        rgba(6, 14, 26, 0.97);
-  --dac-chip:           rgba(13, 27, 42, 0.80);
-  --dac-input-bg:       rgba(6, 14, 26, 0.70);
-  --dac-map-overlay:    rgba(6, 14, 26, 0.85);
-}
-
-/* ═══════════════════════════════════════════════════════════════════════════
-   LIGHT THEME
-   Applied via `html.light` class (toggled by ThemeToggle in Navbar)
-   ═══════════════════════════════════════════════════════════════════════════ */
-html.light {
-  /* Palette */
-  --dac-bg:             #eef5ff;
-  --dac-surface:        #ffffff;
-  --dac-surface-2:      #ddeaf8;
-  --dac-glass:          rgba(255, 255, 255, 0.72);
-  --dac-glass-2:        rgba(255, 255, 255, 0.92);
-
-  --dac-accent:         #0284c7;
-  --dac-accent-dark:    #0369a1;
-  --dac-warm:           #b45309;
-  --dac-warm-dark:      #92400e;
-
-  --dac-border:         rgba(2, 132, 199, 0.18);
-  --dac-border-hi:      rgba(2, 132, 199, 0.40);
-  --dac-accent-pale:    rgba(2, 132, 199, 0.09);
-  --dac-accent-glow:    rgba(2, 132, 199, 0.22);
-  --dac-warm-pale:      rgba(180, 83, 9, 0.09);
-
-  --dac-text:           #0c1a2e;
-  --dac-muted:          #3d5166;
-  --dac-dim:            #7a90a8;
-
-  /* Semantic component tokens */
-  --dac-card:           rgba(255, 255, 255, 0.75);
-  --dac-card-dense:     rgba(255, 255, 255, 0.90);
-  --dac-card-solid:     rgba(255, 255, 255, 0.97);
-  --dac-nav-bg-scroll:  rgba(238, 245, 255, 0.97);
-  --dac-nav-bg-top:     rgba(238, 245, 255, 0.80);
-  --dac-menu-bg:        rgba(238, 245, 255, 0.99);
-  --dac-chip:           rgba(255, 255, 255, 0.88);
-  --dac-input-bg:       rgba(255, 255, 255, 0.80);
-  --dac-map-overlay:    rgba(238, 245, 255, 0.90);
-}
-
-/* ── Tailwind color tokens update for light mode ──────────────────────────
-   These shadow the @theme values when html.light is set               */
-html.light {
-  --color-dac-bg:          #eef5ff;
-  --color-dac-surface:     #ffffff;
-  --color-dac-accent:      #0284c7;
-  --color-dac-accent-dark: #0369a1;
-  --color-dac-warm:        #b45309;
-  --color-dac-warm-dark:   #92400e;
-  --color-dac-text:        #0c1a2e;
-  --color-dac-muted:       #3d5166;
-  --color-dac-dim:         #7a90a8;
-}
-
 /* ── Base ─────────────────────────────────────────────────────────────────── */
 @layer base {
   * {
@@ -159,207 +60,123 @@ html.light {
   html { scroll-behavior: smooth; }
 
   body {
-    background-color: var(--dac-bg);
-    color: var(--dac-text);
-    overflow-x: hidden;
+    background-color: #fff;
+    color: var(--color-dac-ink);
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    transition: background-color 0.3s ease, color 0.3s ease;
   }
+
+  :focus-visible { outline: 2px solid var(--color-dac-blue); outline-offset: 2px; }
+  ::selection    { background: var(--color-dac-ice); }
 }
 
-/* ── Scrollbar ────────────────────────────────────────────────────────────── */
-::-webkit-scrollbar        { width: 4px; }
-::-webkit-scrollbar-track  { background: var(--dac-bg); }
-::-webkit-scrollbar-thumb  { background: var(--dac-surface-2); border-radius: 999px; }
+/* ── Motion pre-states ────────────────────────────────────────────────────
+   Only applied while <html> has `motion` (set by the head script in
+   layout.tsx). GSAP animates elements out of these states.             */
+.dac-preloader { display: none; clip-path: inset(0 0 0 0); }
+html.motion.intro .dac-preloader { display: flex; }
 
-/* ═══════════════════════════════════════════════════════════════════════════
-   COMPONENT CLASSES
-   ═══════════════════════════════════════════════════════════════════════════ */
-@layer components {
-
-  .glass-card {
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    background: var(--dac-glass);
-    border: 1px solid var(--dac-border);
-  }
-
-  .glass-card-hi {
-    backdrop-filter: blur(24px);
-    -webkit-backdrop-filter: blur(24px);
-    background: var(--dac-glass-2);
-    border: 1px solid var(--dac-border-hi);
-  }
-
-  .section-eyebrow {
-    color: var(--dac-accent);
-    font-size: 0.6875rem;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.16em;
-    margin-bottom: 0.875rem;
-    font-family: var(--font-figtree);
-  }
-
-  .section-title {
-    font-family: var(--font-syne);
-    font-weight: 700;
-    line-height: 1.1;
-    letter-spacing: -0.025em;
-    color: var(--dac-text);
-    font-size: clamp(2rem, 4.5vw, 3.25rem);
-  }
-
-  .section-sub {
-    color: var(--dac-muted);
-    line-height: 1.72;
-    font-size: clamp(0.9375rem, 2vw, 1.0625rem);
-  }
-
-  /* Primary CTA — warm amber */
-  .dac-btn-primary {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    border-radius: 10px;
-    background: var(--dac-warm);
-    color: #fff8f0;
-    font-family: var(--font-syne);
-    font-weight: 700;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    padding: 0.875rem 1.875rem;
-    font-size: 0.9375rem;
-    text-decoration: none;
-  }
-  .dac-btn-primary:hover {
-    background: var(--dac-warm-dark);
-    transform: translateY(-1px);
-    box-shadow: 0 10px 24px rgba(180, 83, 9, 0.3);
-  }
-
-  /* Secondary CTA — outline */
-  .dac-btn-outline {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    border-radius: 10px;
-    border: 1px solid var(--dac-border-hi);
-    background: transparent;
-    color: var(--dac-text);
-    font-family: var(--font-syne);
-    font-weight: 700;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    padding: 0.875rem 1.875rem;
-    font-size: 0.9375rem;
-    text-decoration: none;
-  }
-  .dac-btn-outline:hover {
-    background: var(--dac-accent-pale);
-    border-color: var(--dac-accent);
-    color: var(--dac-accent);
-  }
-
-  /* Inputs */
-  .dac-input {
-    width: 100%;
-    border-radius: 10px;
-    padding: 0.75rem 1rem;
-    font-size: 0.9375rem;
-    font-family: var(--font-figtree);
-    color: var(--dac-text);
-    background: var(--dac-input-bg);
-    border: 1px solid var(--dac-border);
-    outline: none;
-    transition: border-color 0.2s, background 0.3s;
-  }
-  .dac-input:focus     { border-color: var(--dac-border-hi); }
-  .dac-input::placeholder { color: var(--dac-dim); }
-
-  /* Theme toggle button */
-  .theme-toggle {
-    width: 36px;
-    height: 36px;
-    border-radius: 8px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: var(--dac-accent-pale);
-    border: 1px solid var(--dac-border);
-    color: var(--dac-muted);
-    cursor: pointer;
-    transition: all 0.2s ease;
-    flex-shrink: 0;
-  }
-  .theme-toggle:hover {
-    background: var(--dac-accent-pale);
-    border-color: var(--dac-accent);
-    color: var(--dac-accent);
-  }
-}
-
-/* ── Air-flow lines ──────────────────────────────────────────────────────── */
-.air-line {
-  position: absolute;
-  left: -10%;
-  width: 120%;
-  height: 1px;
-  background: linear-gradient(
-    90deg,
-    transparent 0%,
-    rgba(56, 189, 248, 0.06) 40%,
-    rgba(56, 189, 248, 0.12) 60%,
-    transparent 100%
-  );
-  animation: air-flow var(--flow-d, 8s) linear infinite var(--flow-dl, 0s);
-  top: var(--flow-t, 30%);
-}
-html.light .air-line {
-  background: linear-gradient(
-    90deg,
-    transparent 0%,
-    rgba(2, 132, 199, 0.05) 40%,
-    rgba(2, 132, 199, 0.10) 60%,
-    transparent 100%
-  );
-}
+html.motion [data-reveal]     { opacity: 0; }
+html.motion [data-split]      { visibility: hidden; }
+html.motion [data-hero-intro] { opacity: 0; }
+html.motion [data-hero-nav]   { opacity: 0; visibility: hidden; }
 
 /* ── Animations ──────────────────────────────────────────────────────────── */
-@keyframes air-flow {
-  from { transform: translateX(-20%); opacity: 0; }
-  10%  { opacity: 1; }
-  90%  { opacity: 1; }
-  to   { transform: translateX(20%);  opacity: 0; }
+@keyframes dac-pop {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0);   }
 }
 
-@keyframes logo-pulse {
-  0%, 100% { opacity: 1; }
-  50%       { opacity: 0.4; }
+/* Overlay fade (mobile menu) */
+@keyframes dac-fade {
+  from { opacity: 0; }
+  to   { opacity: 1; }
 }
 
-@keyframes float-a {
-  0%, 100% { transform: translateY(0px);   }
-  50%       { transform: translateY(-8px);  }
+/* Brand marquee: the list is rendered twice, so -50% loops seamlessly */
+@keyframes dac-marquee {
+  from { transform: translateX(0);    }
+  to   { transform: translateX(-50%); }
 }
 
-@keyframes dac-ping {
-  0%   { transform: scale(1);   opacity: 0.7; }
-  100% { transform: scale(2.5); opacity: 0;   }
+/* Coverage radar rings */
+@keyframes dac-ring {
+  0%   { transform: scale(0.2); opacity: 0.7; }
+  100% { transform: scale(1);   opacity: 0;   }
 }
 
-.animate-logo-pulse { animation: logo-pulse 3s ease-in-out infinite; }
-.animate-float-a    { animation: float-a 6s ease-in-out infinite; }
-.pulse-ring         { animation: dac-ping 2.5s ease-out infinite; }
-.pulse-ring-2       { animation: dac-ping 2.5s ease-out infinite 0.8s; }
+/* Slow drifting glow blobs */
+@keyframes dac-drift {
+  0%, 100% { transform: translate(0, 0) scale(1);       }
+  50%      { transform: translate(6%, -8%) scale(1.15); }
+}
 
-/* ── Mapbox ──────────────────────────────────────────────────────────────── */
-.mapboxgl-ctrl-logo,
-.mapboxgl-ctrl-attrib { display: none !important; }
+/* Cold-air streaks in the final CTA */
+@keyframes dac-airflow {
+  from { transform: translateX(-30%); opacity: 0; }
+  15%  { opacity: 1; }
+  85%  { opacity: 1; }
+  to   { transform: translateX(30%);  opacity: 0; }
+}
+
+/* ── Coverage map (Leaflet) ────────────────────────────────────────────────
+   Greyscale tiles so the brand-blue markers carry the colour.            */
+.dac-map .leaflet-tile-pane { filter: grayscale(1) brightness(1.1) contrast(0.8); opacity: 0.85; }
+.dac-map .leaflet-container,
+.dac-map.leaflet-container { font-family: var(--font-open-sans), sans-serif; background: var(--color-dac-mist); }
+.dac-map .leaflet-control-attribution { font-size: 10px; background: rgb(255 255 255 / 0.8); }
+.dac-map .leaflet-bar { border: 0; box-shadow: 0 6px 20px -8px rgb(0 0 0 / 0.3); border-radius: 10px; overflow: hidden; }
+.dac-map .leaflet-bar a { color: var(--color-dac-ink); }
+
+.dac-map-pin { position: relative; }
+.dac-map-dot {
+  position: absolute; left: 2px; top: 2px;
+  width: 12px; height: 12px; border-radius: 9999px;
+  background: var(--color-dac-bright); border: 2px solid #fff;
+  box-shadow: 0 0 0 4px rgb(70 150 239 / 0.22);
+}
+.dac-map-home {
+  position: absolute; left: -11px; top: -11px;
+  width: 22px; height: 22px; border-radius: 9999px;
+  background: var(--color-dac-blue); border: 3px solid #fff;
+  box-shadow: 0 6px 16px -4px rgb(31 111 209 / 0.7);
+}
+.dac-map-pulse {
+  position: absolute; inset: -14px; border-radius: 9999px;
+  border: 2px solid rgb(31 111 209 / 0.5);
+  animation: dac-ring 2.6s ease-out infinite;
+}
+.dac-map-label {
+  position: absolute; left: 50%; top: 10px; transform: translateX(-50%);
+  white-space: nowrap; padding: 2px 8px; border-radius: 9999px;
+  font-size: 11px; font-weight: 600; color: var(--color-dac-ink);
+  background: rgb(255 255 255 / 0.92); box-shadow: 0 2px 6px rgb(0 0 0 / 0.12);
+}
+/* Home label sits to the right of its pin (Pateros is just north of Bambang) */
+.dac-map-label--home {
+  left: 20px; top: -11px; transform: none;
+  font-size: 12px; font-weight: 700; line-height: 18px;
+  color: #fff; background: var(--color-dac-blue);
+}
+.dac-map .dac-map-tip {
+  border: 0; border-radius: 9999px; padding: 3px 10px;
+  font-size: 12px; font-weight: 600; color: var(--color-dac-ink);
+  box-shadow: 0 4px 14px -4px rgb(0 0 0 / 0.25);
+}
+.dac-map .dac-map-tip::before { display: none; }
+
+/* Service tile cursor spotlight */
+.dac-spotlight {
+  background-image: radial-gradient(
+    220px circle at var(--mx, 50%) var(--my, 50%),
+    rgb(255 255 255 / 0.9),
+    transparent 70%
+  );
+}
 
 /* ── Reduced motion ──────────────────────────────────────────────────────── */
 @media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
   *, *::before, *::after {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;

@@ -1,20 +1,13 @@
 import type { Metadata } from 'next'
-import { DM_Sans, Figtree } from 'next/font/google'
+import { Open_Sans } from 'next/font/google'
+import 'lenis/dist/lenis.css'
 import './globals.css'
 
-// DM Sans — clean geometric, excellent readability at all sizes,
-// accessibility-friendly with clear letterforms and good weight range.
-const dmSans = DM_Sans({
+const openSans = Open_Sans({
   subsets: ['latin'],
-  weight: ['400', '500', '600', '700', '800'],
-  variable: '--font-syne',   // keeps existing class references working
-  display: 'swap',
-})
-
-const figtree = Figtree({
-  subsets: ['latin'],
-  weight: ['400', '500', '600', '700'],
-  variable: '--font-figtree',
+  weight: ['400', '600', '700', '800'],
+  style: ['normal', 'italic'],
+  variable: '--font-open-sans',
   display: 'swap',
 })
 
@@ -28,22 +21,26 @@ export const metadata: Metadata = {
   ],
 }
 
+/*
+  Runs before first paint. Adds `motion` to <html> (enables the hidden
+  pre-animation states in globals.css) unless the visitor prefers reduced
+  motion, and `intro` on the first visit of the session (shows the preloader).
+  If the motion code hasn't booted within 4s, both are removed so content
+  can never stay hidden.
+*/
+const MOTION_BOOT = `(function(){var d=document.documentElement;
+if(window.matchMedia('(prefers-reduced-motion: reduce)').matches)return;
+d.classList.add('motion');
+try{if(!sessionStorage.getItem('dac-intro'))d.classList.add('intro')}catch(e){}
+setTimeout(function(){if(!window.__dacMotionReady)d.classList.remove('motion','intro')},4000)})()`
+
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${dmSans.variable} ${figtree.variable}`}>
+    <html lang="en" className={openSans.variable} suppressHydrationWarning>
       <head>
-        {/*
-          No-flash theme script — runs before React hydrates.
-          Reads localStorage and applies .light class so there's
-          no dark→light flicker on page load.
-        */}
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `(function(){try{var t=localStorage.getItem('dac-theme');if(t==='light')document.documentElement.classList.add('light');}catch(e){}})();`,
-          }}
-        />
+        <script dangerouslySetInnerHTML={{ __html: MOTION_BOOT }} />
       </head>
-      <body className="bg-dac-bg text-dac-text antialiased overflow-x-hidden">
+      <body className="min-h-dvh overflow-x-clip bg-white font-sans text-dac-ink antialiased">
         {children}
       </body>
     </html>
