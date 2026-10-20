@@ -90,8 +90,8 @@ export const BUSINESS = {
   name: 'Dizon Aircon & Refrigeration Services',
   about:
     'Dizon Aircon & Refrigeration Services installs, cleans and repairs air conditioners for homes, offices and commercial buildings across Metro Manila. Free check-up and estimate on every job.',
-  phone: { display: '0917 780 0051', href: 'tel:+639177800051' },
-  sms: 'sms:+639177800051',
+  phone: { display: '0945 849 0554', href: 'tel:+639458490554' },
+  sms: 'sms:+639458490554',
   email: 'dizonairconditioningservices@gmail.com',
   address: 'Bambang, Taguig City',
   mapHref: 'https://maps.google.com/?q=Bambang+Taguig',
@@ -99,10 +99,9 @@ export const BUSINESS = {
 }
 
 export const PHONE_NUMBERS: PhoneNumber[] = [
-  { network: 'Globe', number: '0917 780 0051', href: 'tel:+639177800051' },
-  { network: 'Globe', number: '0945 849 0554', href: 'tel:+639458490554' },
-  { network: 'Smart', number: '0999 966 5008', href: 'tel:+639999665008' },
-  { network: 'PLDT',  number: '(02) 851522',   href: 'tel:+6328851522'   },
+  { network: 'Globe',    number: '0945 849 0554',  href: 'tel:+639458490554' },
+  { network: 'Smart',    number: '0968 173 2626',  href: 'tel:+639681732626' },
+  { network: 'Landline', number: '(02) 8515 2289', href: 'tel:+63285152289'  },
 ]
 
 export const NAV_LINKS: NavLink[] = [

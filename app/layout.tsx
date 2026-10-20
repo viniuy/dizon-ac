@@ -14,7 +14,7 @@ const openSans = Open_Sans({
 export const metadata: Metadata = {
   title: 'Dizon Aircon & Refrigeration Services | Bambang, Taguig',
   description:
-    'Professional AC installation, cleaning, repair, and maintenance in Bambang, Taguig and Metro Manila. Free check-up and estimate. Call 0917 780 0051.',
+    'Professional AC installation, cleaning, repair, and maintenance in Bambang, Taguig and Metro Manila. Free check-up and estimate. Call 0945 849 0554.',
   keywords: [
     'aircon repair Taguig', 'AC cleaning Bambang', 'aircon installation Metro Manila',
     'Dizon aircon', 'AC maintenance', 'refrigeration services Philippines',
