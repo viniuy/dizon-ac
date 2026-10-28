@@ -101,7 +101,7 @@ export const BUSINESS = {
 export const PHONE_NUMBERS: PhoneNumber[] = [
   { network: 'Globe',    number: '0945 849 0554',  href: 'tel:+639458490554' },
   { network: 'Smart',    number: '0968 173 2626',  href: 'tel:+639681732626' },
-  { network: 'Landline', number: '(02) 8515 2289', href: 'tel:+63285152289'  },
+  { network: 'Landline', number: '(02) 8280 2293', href: 'tel:+63282802293'  },
 ]
 
 export const NAV_LINKS: NavLink[] = [
