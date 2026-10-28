@@ -7,9 +7,9 @@ import { BUSINESS, NAV_LINKS } from './landing.data'
 export function Logo({ inverted = false }: { inverted?: boolean }) {
   return (
     <span
-      className={`text-[2rem] leading-none font-bold tracking-[-0.04em] ${inverted ? 'text-white' : 'text-dac-bright'}`}
+      className={`font-[family-name:var(--font-archivo)] text-[1.75rem] leading-none font-extrabold tracking-[-0.01em] [font-stretch:125%] ${inverted ? 'text-white' : 'text-dac-ink'}`}
     >
-      dizon<span className="text-dac-amber">.</span>
+      DIZON
     </span>
   )
 }

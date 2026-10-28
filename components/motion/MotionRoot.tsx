@@ -142,15 +142,14 @@ export function MotionRoot({ children }: { children: React.ReactNode }) {
         className="dac-preloader fixed inset-0 z-[100] items-center justify-center bg-dac-blue"
       >
         <div data-pre-inner className="flex flex-col items-center">
-          <div className="flex overflow-hidden text-[clamp(3.5rem,12vw,7rem)] leading-none font-bold tracking-[-0.05em] text-white">
-            {'dizon'.split('').map((l, i) => (
+          <div className="flex overflow-hidden font-[family-name:var(--font-archivo)] text-[clamp(3rem,11vw,6.5rem)] leading-none font-extrabold tracking-[-0.01em] text-white [font-stretch:125%]">
+            {'DIZON'.split('').map((l, i) => (
               <span key={i} data-pre-letter className="inline-block">{l}</span>
             ))}
-            <span data-pre-letter className="inline-block text-dac-amber">.</span>
           </div>
           <span data-pre-line className="mt-5 block h-px w-40 origin-left bg-white/50" />
-          <p className="mt-4 text-xs font-semibold tracking-[0.3em] text-white/70 uppercase">
-            Aircon &amp; Refrigeration
+          <p className="mt-4 font-[family-name:var(--font-poppins)] text-[clamp(0.8rem,2.2vw,1.25rem)] font-semibold text-dac-ice uppercase">
+            Aircon and Refrigeration
           </p>
         </div>
       </div>

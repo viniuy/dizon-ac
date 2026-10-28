@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import { Open_Sans } from 'next/font/google'
+import { Archivo, Open_Sans, Poppins } from 'next/font/google'
 import 'lenis/dist/lenis.css'
 import './globals.css'
 
@@ -8,6 +8,22 @@ const openSans = Open_Sans({
   weight: ['400', '600', '700', '800'],
   style: ['normal', 'italic'],
   variable: '--font-open-sans',
+  display: 'swap',
+})
+
+// Logo wordmark: extra-wide, heavy Archivo + Poppins tagline
+const archivo = Archivo({
+  subsets: ['latin'],
+  weight: 'variable',
+  axes: ['wdth'],
+  variable: '--font-archivo',
+  display: 'swap',
+})
+
+const poppins = Poppins({
+  subsets: ['latin'],
+  weight: ['600'],
+  variable: '--font-poppins',
   display: 'swap',
 })
 
@@ -36,7 +52,7 @@ setTimeout(function(){if(!window.__dacMotionReady)d.classList.remove('motion','i
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={openSans.variable} suppressHydrationWarning>
+    <html lang="en" className={`${openSans.variable} ${archivo.variable} ${poppins.variable}`} suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: MOTION_BOOT }} />
       </head>

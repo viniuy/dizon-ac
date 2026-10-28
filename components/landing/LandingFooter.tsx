@@ -58,9 +58,9 @@ export function LandingFooter() {
       <div aria-hidden className="mt-10 overflow-hidden">
         <p
           data-split
-          className="-mb-[0.22em] text-center text-[clamp(6rem,26vw,22rem)] leading-none font-extrabold tracking-[-0.06em] text-white/10 select-none"
+          className="-mb-[0.12em] text-center font-[family-name:var(--font-archivo)] text-[clamp(4rem,19vw,16rem)] leading-none font-extrabold tracking-[-0.01em] text-white/10 select-none [font-stretch:125%]"
         >
-          dizon<span className="text-dac-amber/40">.</span>
+          DIZON
         </p>
       </div>
     </footer>
