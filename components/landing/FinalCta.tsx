@@ -27,7 +27,7 @@ export function FinalCta() {
             Aircon not cooling?
           </h2>
           <p data-reveal className="mt-3 max-w-xl text-[1.1rem] text-white/85">
-            Book now or call us — check-up and estimate are always free.
+            Book now or call us — check-up is free with every cleaning.
           </p>
         </div>
         <div data-reveal className="flex flex-wrap gap-3">

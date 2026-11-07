@@ -1,27 +1,12 @@
 'use client'
 
-import { useEffect, useId, useState } from 'react'
+import { useEffect, useId, useRef, useState } from 'react'
 import { RiCheckboxCircleFill, RiLoader4Line, RiPhoneFill } from '@remixicon/react'
+import { submitBooking } from '@/app/actions/booking'
+import { EMPTY_BOOKING as EMPTY, validateBooking as validate, type BookingField as Field, type BookingForm as Form } from '@/lib/booking'
+import { handlePhoneInput, PHONE_INPUT_PROPS } from '@/lib/phone'
 import { BUSINESS, PHONE_NUMBERS, SERVICE_OPTIONS } from './landing.data'
 import { SELECT_SERVICE_EVENT } from './ServicesSection'
-
-type Field = 'name' | 'phone' | 'address' | 'service' | 'date' | 'message'
-type Form = Record<Field, string>
-
-const EMPTY: Form = { name: '', phone: '', address: '', service: '', date: '', message: '' }
-
-// PH mobile (09xx / +639xx) or landline — digits only after stripping spaces, dashes, parens
-const PHONE_RE = /^(\+?63|0)\d{9,10}$/
-
-function validate(form: Form) {
-  const errors: Partial<Record<Field, string>> = {}
-  if (!form.name.trim())    errors.name    = 'Please enter your name.'
-  if (!PHONE_RE.test(form.phone.replace(/[\s\-()]/g, '')))
-                            errors.phone   = 'Please enter a valid PH number, e.g. 0917 123 4567.'
-  if (!form.address.trim()) errors.address = 'Please enter the service address.'
-  if (!form.service)        errors.service = 'Please choose a service.'
-  return errors
-}
 
 const INPUT =
   'mt-1.5 block w-full rounded-[5px] border border-black/15 bg-white px-4 py-3 text-dac-ink placeholder:text-black/40 focus:border-dac-blue focus:ring-2 focus:ring-dac-blue/20 focus:outline-none aria-invalid:border-red-500'
@@ -32,6 +17,10 @@ export function BookSection() {
   const [errors, setErrors] = useState<Partial<Record<Field, string>>>({})
   const [submitting, setSubmitting] = useState(false)
   const [submitted, setSubmitted] = useState(false)
+  const [sendError, setSendError] = useState<string | null>(null)
+  // When the form appeared; real people take a while to fill it in (anti-spam)
+  const shownAt = useRef(0)
+  useEffect(() => { shownAt.current = Date.now() }, [])
 
   // "Book this service" in the Services panel pre-selects the service here
   useEffect(() => {
@@ -61,10 +50,13 @@ export function BookSection() {
       return
     }
     setSubmitting(true)
-    // TODO: wire up to your form endpoint / Supabase / email service
-    await new Promise(r => setTimeout(r, 1200))
+    setSendError(null)
+    const website = String(new FormData(e.currentTarget).get('website') ?? '')
+    const result = await submitBooking(form, { website, elapsedMs: Date.now() - shownAt.current }).catch(() => null)
     setSubmitting(false)
-    setSubmitted(true)
+    if (result?.ok) return setSubmitted(true)
+    if (result?.errors) setErrors(result.errors)
+    setSendError(result?.message ?? 'Something went wrong. Please try again, or call us directly.')
   }
 
   const fieldProps = (name: Field) => ({
@@ -92,7 +84,7 @@ export function BookSection() {
             Tell us about your unit and preferred date. We&apos;ll call or text you to confirm your schedule.
           </p>
           <ol data-reveal className="mt-8 space-y-3 text-dac-ink">
-            {['Submit your request', 'We confirm your schedule', 'Free check-up & estimate on site'].map((s, i) => (
+            {['Submit your request', 'We confirm your schedule', 'Check-up & estimate on site'].map((s, i) => (
               <li key={s} className="flex items-center gap-3">
                 <span className="grid size-7 place-items-center rounded-full bg-dac-ice text-sm font-bold text-dac-blue">
                   {i + 1}
@@ -138,6 +130,13 @@ export function BookSection() {
             </div>
           ) : (
             <form noValidate onSubmit={handleSubmit} className="grid gap-5 sm:grid-cols-2">
+              {/* Honeypot: hidden from people and screen readers, bots tend to fill it */}
+              <div aria-hidden className="absolute -left-[9999px] h-px w-px overflow-hidden">
+                <label>
+                  Website
+                  <input type="text" name="website" tabIndex={-1} autoComplete="off" defaultValue="" />
+                </label>
+              </div>
               <div>
                 <label htmlFor={`${uid}-name`} className="text-sm font-semibold text-dac-ink">Full name</label>
                 <input type="text" autoComplete="name" placeholder="Juan dela Cruz" {...fieldProps('name')} />
@@ -146,11 +145,12 @@ export function BookSection() {
               <div>
                 <label htmlFor={`${uid}-phone`} className="text-sm font-semibold text-dac-ink">Mobile number</label>
                 <input
-                  type="tel"
-                  inputMode="tel"
-                  autoComplete="tel"
-                  placeholder="0917 123 4567"
+                  {...PHONE_INPUT_PROPS}
                   {...fieldProps('phone')}
+                  onChange={e => {
+                    handlePhoneInput(e)
+                    handleChange(e)
+                  }}
                 />
                 {errorText('phone')}
               </div>
@@ -179,6 +179,7 @@ export function BookSection() {
                   Preferred date <span className="font-normal text-dac-ink/60">(optional)</span>
                 </label>
                 <input type="date" {...fieldProps('date')} />
+                {errorText('date')}
               </div>
               <div className="sm:col-span-2">
                 <label htmlFor={`${uid}-message`} className="text-sm font-semibold text-dac-ink">
@@ -190,8 +191,12 @@ export function BookSection() {
                   {...fieldProps('message')}
                   className={`${INPUT} resize-none`}
                 />
+                {errorText('message')}
               </div>
               <div className="sm:col-span-2">
+                {sendError && (
+                  <p role="alert" className="mb-4 rounded-[5px] bg-red-50 px-4 py-3 text-sm text-red-700">{sendError}</p>
+                )}
                 <button
                   type="submit"
                   data-magnetic
@@ -202,7 +207,7 @@ export function BookSection() {
                   {submitting ? 'Sending…' : 'Book a Service'}
                 </button>
                 <p className="mt-3 text-center text-xs text-dac-ink/60">
-                  Free check-up and estimate. You only pay once you approve the work.
+                  ₱550 check-up fee, free with any cleaning. No work starts until you approve the estimate.
                 </p>
               </div>
             </form>

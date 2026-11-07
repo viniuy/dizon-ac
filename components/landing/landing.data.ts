@@ -5,14 +5,14 @@
 
 // ── Interfaces ───────────────────────────────────────────────────────────────
 
-export interface PhoneNumber {
-  network: string
-  number: string
+export interface NavLink {
+  label: string
   href: string
 }
 
-export interface NavLink {
-  label: string
+export interface PhoneNumber {
+  network: string
+  number: string
   href: string
 }
 
@@ -89,7 +89,7 @@ export interface FooterLinks {
 export const BUSINESS = {
   name: 'Dizon Aircon & Refrigeration Services',
   about:
-    'Dizon Aircon & Refrigeration Services installs, cleans and repairs air conditioners for homes, offices and commercial buildings across Metro Manila. Free check-up and estimate on every job.',
+    'Dizon Aircon & Refrigeration Services installs, cleans and repairs air conditioners for homes, offices and commercial buildings across Metro Manila. Free check-up with every cleaning; ₱550 check-up fee for other services.',
   phone: { display: '0945 849 0554', href: 'tel:+639458490554' },
   sms: 'sms:+639458490554',
   email: 'dizonairconditioningservices@gmail.com',
@@ -104,12 +104,11 @@ export const PHONE_NUMBERS: PhoneNumber[] = [
   { network: 'Landline', number: '(02) 8280 2293', href: 'tel:+63282802293'  },
 ]
 
+// Kept short on purpose: the navbar only links the sections people look for most
 export const NAV_LINKS: NavLink[] = [
-  { label: 'Our Services', href: '#services' },
-  { label: 'How It Works', href: '#how'      },
-  { label: 'Maintenance',  href: '#pms'      },
-  { label: 'Our Work',     href: '#work'     },
-  { label: 'Coverage',     href: '#coverage' },
+  { label: 'Services',     href: '#services' },
+  { label: 'How it works', href: '#how'      },
+  { label: 'Our work',     href: '#work'     },
   { label: 'FAQ',          href: '#faq'      },
 ]
 
@@ -117,9 +116,9 @@ export const NAV_LINKS: NavLink[] = [
 
 export const HERO = {
   headline: ['Aircon care,', 'done properly.'],
-  sub: 'Cleaning, repair and installation for homes and businesses across Metro Manila — with a free check-up and written estimate before any work starts.',
+  sub: 'Cleaning, repair and installation for homes and businesses across Metro Manila — with a check-up and written estimate before any work starts.',
   facts: [
-    'Free check-up & estimate',
+    'Free check-up with every cleaning',
     'All brands, inverter & non-inverter',
     'Homes, condos & commercial',
   ],
@@ -166,7 +165,7 @@ export const SERVICES: Service[] = [
     description:
       'Faulty PCB boards, compressor issues, fan motor failure, refrigerant leaks and electrical faults. All brands serviced.',
     duration: '1–3 hrs',
-    note: 'Free check-up & estimate before any repair',
+    note: 'Check-up & written estimate before any repair',
   },
   {
     id: 'installation',
@@ -285,7 +284,7 @@ export const PMS_POINTS: string[] = [
 // ── Guarantee ─────────────────────────────────────────────────────────────────
 
 export const GUARANTEE: string[] = [
-  'Free check-up and written estimate before any work',
+  'Written estimate before any work — check-up free with cleaning',
   'Experienced technicians for homes and commercial sites',
   'Clean, tidy work with proper safety practices',
   'We come back free if the same issue persists',
@@ -336,8 +335,8 @@ export const FAQS: Faq[] = [
     a: 'Yes. We install and service both inverter and non-inverter units — window, split, cassette, ducted and multi-split — from all major brands.',
   },
   {
-    q: 'Is the check-up really free?',
-    a: 'Yes. We check your unit and give you a written estimate before any work begins. You decide if you want to push through.',
+    q: 'How much is the check-up?',
+    a: 'The check-up fee is ₱550, and it is free when you book a cleaning. We check your unit and give you a written estimate before any work begins. You decide if you want to push through.',
   },
   {
     q: 'May warranty po ba?',
@@ -362,7 +361,7 @@ export const SERVICE_OPTIONS: string[] = [
   'Freon Charging',
   'Relocation / Pulldown',
   'VRF / VRV Service',
-  'Free Check-up & Quote',
+  'Check-up & Quote',
 ]
 
 // ── Footer links ──────────────────────────────────────────────────────────────

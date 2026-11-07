@@ -188,7 +188,7 @@ function StepVisual({ index }: { index: number }) {
     case 1:
       return (
         <div className="flex h-full flex-col justify-center">
-          <p className="text-[12px] font-semibold tracking-[0.14em] text-dac-ink/50 uppercase">Free check-up</p>
+          <p className="text-[12px] font-semibold tracking-[0.14em] text-dac-ink/50 uppercase">Check-up</p>
           <ul className="mt-3 space-y-2.5 text-[14px] text-dac-ink">
             {['Filters & coil', 'Refrigerant pressure', 'Electrical & PCB', 'Drain line'].map((item, k) => (
               <li key={item} className="flex items-center gap-3 rounded-xl bg-white px-3.5 py-2.5 shadow-sm">
