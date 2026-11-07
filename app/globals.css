@@ -18,6 +18,21 @@
   --color-input:  var(--input);
   --color-ring:   var(--ring);
 
+  /* shadcn colour tokens → utilities (bg-primary, text-muted-foreground, …) */
+  --color-card:                 var(--card);
+  --color-card-foreground:      var(--card-foreground);
+  --color-popover:              var(--popover);
+  --color-popover-foreground:   var(--popover-foreground);
+  --color-primary:              var(--primary);
+  --color-primary-foreground:   var(--primary-foreground);
+  --color-secondary:            var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted:                var(--muted);
+  --color-muted-foreground:     var(--muted-foreground);
+  --color-accent:               var(--accent);
+  --color-accent-foreground:    var(--accent-foreground);
+  --color-destructive:          var(--destructive);
+
   /* Dizon AC palette → Tailwind utilities (bg-dac-blue, text-dac-ink, …) */
   --color-dac-blue:   #1f6fd1;
   --color-dac-bright: #4696ef;
@@ -25,6 +40,8 @@
   --color-dac-mist:   #f3f5f3;
   --color-dac-ice:    #dbf4ff;
   --color-dac-ink:    #2b3036;
+  --color-dac-navy:   #0f2a4f; /* logo background */
+  --color-dac-navy-2: #17406f;
 }
 
 /* ── shadcn base ─────────────────────────────────────────────────────────── */
@@ -35,8 +52,8 @@
   --card-foreground: oklch(0.148 0.004 228.8);
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.148 0.004 228.8);
-  --primary: oklch(0.52 0.105 223.128);
-  --primary-foreground: oklch(0.984 0.019 200.873);
+  --primary: oklch(0.546 0.176 256.4); /* Dizon blue #1f6fd1 */
+  --primary-foreground: oklch(0.985 0 0);
   --secondary: oklch(0.967 0.001 286.375);
   --secondary-foreground: oklch(0.21 0.006 285.885);
   --muted: oklch(0.963 0.002 197.1);
@@ -48,6 +65,36 @@
   --input: oklch(0.925 0.005 214.3);
   --ring: oklch(0.723 0.014 214.4);
   --radius: 0.625rem;
+}
+
+/* ── Staff dashboard theme ───────────────────────────────────────────────────
+   Taken from the logo artwork: navy ink, Dizon blue for actions, ice-blue
+   surfaces instead of grey, amber for the things that need attention.
+   Scoped to the staff area so the public site is unchanged.                  */
+.staff-theme {
+  --foreground: oklch(0.26 0.06 258);          /* navy ink */
+  --card-foreground: oklch(0.26 0.06 258);
+  --popover-foreground: oklch(0.26 0.06 258);
+  --muted: oklch(0.965 0.014 240);             /* ice */
+  --muted-foreground: oklch(0.52 0.035 252);
+  --accent: oklch(0.95 0.03 245);
+  --accent-foreground: oklch(0.32 0.1 258);
+  --secondary: oklch(0.95 0.03 245);
+  --secondary-foreground: oklch(0.36 0.11 258);
+  --border: oklch(0.91 0.02 245);
+  --input: oklch(0.88 0.025 245);
+  --ring: oklch(0.6 0.16 256);
+  --radius: 0.75rem;
+  background:
+    radial-gradient(60rem 24rem at 15% -4rem, oklch(0.93 0.05 240 / 0.7), transparent 70%),
+    radial-gradient(50rem 22rem at 100% 0, oklch(0.95 0.04 210 / 0.6), transparent 70%),
+    oklch(0.975 0.01 240);
+}
+
+/* Cards: soft navy-tinted lift instead of a flat grey ring */
+.staff-theme [data-slot="card"] {
+  --tw-ring-color: oklch(0.88 0.03 245 / 0.8);
+  box-shadow: 0 1px 2px oklch(0.3 0.08 258 / 0.04), 0 10px 30px -14px oklch(0.3 0.08 258 / 0.18);
 }
 
 /* ── Base ─────────────────────────────────────────────────────────────────── */

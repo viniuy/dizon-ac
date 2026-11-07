@@ -30,7 +30,7 @@ const poppins = Poppins({
 export const metadata: Metadata = {
   title: 'Dizon Aircon & Refrigeration Services | Bambang, Taguig',
   description:
-    'Professional AC installation, cleaning, repair, and maintenance in Bambang, Taguig and Metro Manila. Free check-up and estimate. Call 0945 849 0554.',
+    'Professional AC installation, cleaning, repair, and maintenance in Bambang, Taguig and Metro Manila. Free check-up with every cleaning. Call 0945 849 0554.',
   keywords: [
     'aircon repair Taguig', 'AC cleaning Bambang', 'aircon installation Metro Manila',
     'Dizon aircon', 'AC maintenance', 'refrigeration services Philippines',
@@ -52,7 +52,7 @@ setTimeout(function(){if(!window.__dacMotionReady)d.classList.remove('motion','i
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${openSans.variable} ${archivo.variable} ${poppins.variable}`} suppressHydrationWarning>
+    <html lang="en" className={`${openSans.variable} ${archivo.variable} ${poppins.variable}`} data-scroll-behavior="smooth" suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: MOTION_BOOT }} />
       </head>

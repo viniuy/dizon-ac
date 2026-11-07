@@ -45,7 +45,7 @@ export function ServicesSection() {
       <div className="mx-auto max-w-6xl px-5">
         <SectionTitle id="dac-services" tone="bright">On-site Services</SectionTitle>
         <p data-reveal className="mx-auto mt-4 max-w-lg text-center text-dac-ink/75">
-          Pick a service to see what&apos;s included. Every job starts with a free check-up and estimate.
+          Pick a service to see what&apos;s included. Every job starts with a check-up and estimate — free when you book a cleaning.
         </p>
 
         <ul
@@ -123,7 +123,7 @@ export function ServicesSection() {
                 </li>
                 <li className="flex items-start gap-2.5">
                   <RiCheckboxCircleFill className="mt-0.5 size-5 shrink-0 text-dac-blue" aria-hidden />
-                  Free check-up &amp; estimate
+                  {service.id === 'cleaning' ? 'Free check-up included' : '₱550 check-up & estimate'}
                 </li>
               </ul>
               <a
