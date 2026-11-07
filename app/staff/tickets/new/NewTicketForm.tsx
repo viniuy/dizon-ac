@@ -8,11 +8,13 @@ import {
 import { createTicket, lookupCustomer, type CreateState, type CustomerMatch } from '@/app/actions/tickets'
 import { SERVICE_OPTIONS } from '@/components/landing/landing.data'
 import { Button } from '@/components/ui/button'
+import { DatePicker } from '@/components/ui/date-picker'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { PhoneInput } from '@/components/ui/phone-input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Textarea } from '@/components/ui/textarea'
+import { todayPH } from '@/lib/calendar'
 import { MANUAL_SOURCES, SOURCE_LABEL, type TicketSource } from '@/lib/tickets'
 import { cn } from '@/lib/utils'
 import { FIELD, Group, MENU, PILL, REVEAL, STAGGER, TextButton } from '../../ios'
@@ -144,7 +146,7 @@ export function NewTicketForm() {
             </Select>
           </Field>
           <Field id="date" label="Preferred date" hint="Optional" error={err('date')}>
-            <Input id="date" name="date" type="date" className={FIELD} />
+            <DatePicker id="date" name="date" min={todayPH()} clearable placeholder="No preference" aria-invalid={!!err('date') || undefined} className={FIELD} contentClassName={MENU} />
           </Field>
         </div>
         <Field id="message" label="Concern" hint="Optional" error={err('message')}>

@@ -5,6 +5,7 @@ import { RiCheckLine, RiLoader4Line, RiMapPin2Line } from '@remixicon/react'
 import { saveDetails, type DetailsState } from '@/app/actions/tickets'
 import { SERVICE_OPTIONS } from '@/components/landing/landing.data'
 import { Button } from '@/components/ui/button'
+import { DatePicker } from '@/components/ui/date-picker'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { PhoneInput } from '@/components/ui/phone-input'
@@ -58,7 +59,15 @@ export function DetailsCard({ ticket: t }: { ticket: Details }) {
             </Select>
           </Field>
           <Field id="date" label="Preferred date" error={err('date')}>
-            <Input id="date" name="date" type="date" defaultValue={t.preferred_date ?? ''} />
+            <DatePicker
+              id="date"
+              name="date"
+              defaultValue={t.preferred_date ?? ''}
+              clearable
+              placeholder="No preference"
+              className="h-9 rounded-md border border-input bg-transparent px-3 text-sm shadow-xs focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:outline-none"
+              contentClassName={MENU}
+            />
           </Field>
           <Field id="message" label="Concern" error={err('message')}>
             <Textarea id="message" name="message" rows={3} defaultValue={t.unit_details ?? ''} placeholder="Brand, type, HP, and what's wrong with it" />

@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button'
 import { requireStaff } from '@/lib/staff'
 import { cn } from '@/lib/utils'
 import { HAIRLINE, IOS_TYPE } from './ios'
+import { CompleteFlowProvider } from './CompleteFlow'
 import { LiveRefresh } from './LiveRefresh'
 import { StaffNav } from './StaffNav'
 
@@ -44,7 +45,9 @@ export default async function StaffLayout({ children }: LayoutProps<'/staff'>) {
           </form>
         </div>
       </header>
-      <main className="mx-auto max-w-[1400px] px-4 py-5 sm:px-6 sm:py-6">{children}</main>
+      <main className="mx-auto max-w-[1400px] px-4 py-5 sm:px-6 sm:py-6">
+        <CompleteFlowProvider>{children}</CompleteFlowProvider>
+      </main>
       <LiveRefresh />
     </div>
   )

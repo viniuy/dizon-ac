@@ -48,6 +48,15 @@ export interface Ticket {
   is_warranty_backjob: boolean
   parent_ticket_id: string | null
   payment_status: 'unpaid' | 'paid' | 'waived' | 'disputed'
+  /** Call the customer about rebooking on or after this date ("YYYY-MM-DD") */
+  follow_up_date: string | null
+  /** When staff handled the follow-up call */
+  follow_up_done_at: string | null
+  /** 7 (cleaning) or 90 (repair) days of warranty, null for none */
+  warranty_days: WarrantyDays | null
+  /** Last covered day ("YYYY-MM-DD") */
+  warranty_until: string | null
+  completed_at: string | null
   created_at: string
   updated_at: string
 }
@@ -82,6 +91,24 @@ export const STATUS_DOT: Record<TicketStatus, string> = {
   backjob: 'bg-orange-500',
 }
 
+/** Statuses where the job has been done, so it can get a rebook follow-up */
+export const FINISHED_STATUSES: TicketStatus[] = ['completed', 'awaiting_payment', 'paid']
+
+export type WarrantyDays = 7 | 90
+export const WARRANTY_OPTIONS: { days: WarrantyDays | 0; label: string; hint: string }[] = [
+  { days: 7, label: '7 days', hint: 'Cleaning' },
+  { days: 90, label: '90 days', hint: 'Repair' },
+  { days: 0, label: 'None', hint: 'No warranty' },
+]
+
+/** The usual warranty for a service: a week for cleaning, 90 days for repairs and other work */
+export function defaultWarranty(service: string): WarrantyDays | 0 {
+  const s = service.toLowerCase()
+  if (s.includes('clean') || s.includes('pms')) return 7
+  if (s.includes('check-up') || s.includes('quote')) return 0
+  return 90
+}
+
 export const CANCELLATION_REASONS: { value: CancellationReason; label: string }[] = [
   { value: 'customer_request', label: 'Customer request' },
   { value: 'staff_decision', label: 'Staff decision' },
@@ -95,6 +122,11 @@ export const CANCELLATION_REASONS: { value: CancellationReason; label: string }[
 */
 export const WORK_START = 7 * 60
 export const WORK_END = 19 * 60
+
+/** No jobs on Sundays (0 = Sunday, as in Date.getDay) */
+export const CLOSED_WEEKDAYS = [0]
+/** Is this "YYYY-MM-DD" a day the crew doesn't work? */
+export const isClosedDay = (date: string) => CLOSED_WEEKDAYS.includes(new Date(`${date}T00:00:00Z`).getUTCDay())
 
 /** All scheduling happens in Philippine time */
 export const TIME_ZONE = 'Asia/Manila'
