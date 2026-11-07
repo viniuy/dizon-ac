@@ -3,6 +3,7 @@
 import { useEffect, useId, useRef, useState } from 'react'
 import { RiCheckboxCircleFill, RiLoader4Line, RiPhoneFill } from '@remixicon/react'
 import { submitBooking } from '@/app/actions/booking'
+import { DatePicker } from '@/components/ui/date-picker'
 import { EMPTY_BOOKING as EMPTY, validateBooking as validate, type BookingField as Field, type BookingForm as Form } from '@/lib/booking'
 import { handlePhoneInput, PHONE_INPUT_PROPS } from '@/lib/phone'
 import { BUSINESS, PHONE_NUMBERS, SERVICE_OPTIONS } from './landing.data'
@@ -10,6 +11,12 @@ import { SELECT_SERVICE_EVENT } from './ServicesSection'
 
 const INPUT =
   'mt-1.5 block w-full rounded-[5px] border border-black/15 bg-white px-4 py-3 text-dac-ink placeholder:text-black/40 focus:border-dac-blue focus:ring-2 focus:ring-dac-blue/20 focus:outline-none aria-invalid:border-red-500'
+
+/** Today in the visitor's own calendar, so past days can't be picked */
+const todayLocal = () => {
+  const d = new Date()
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
+}
 
 export function BookSection() {
   const uid = useId()
@@ -178,7 +185,21 @@ export function BookSection() {
                 <label htmlFor={`${uid}-date`} className="text-sm font-semibold text-dac-ink">
                   Preferred date <span className="font-normal text-dac-ink/60">(optional)</span>
                 </label>
-                <input type="date" {...fieldProps('date')} />
+                <DatePicker
+                  id={`${uid}-date`}
+                  value={form.date}
+                  onChange={v => {
+                    setForm(f => ({ ...f, date: v }))
+                    if (errors.date) setErrors(err => ({ ...err, date: undefined }))
+                  }}
+                  min={todayLocal()}
+                  clearable
+                  placeholder="Any day that works"
+                  aria-invalid={errors.date ? true : undefined}
+                  aria-describedby={errors.date ? `${uid}-date-error` : undefined}
+                  className={`${INPUT} text-left`}
+                  contentClassName="rounded-[5px] border border-black/10 bg-white shadow-xl"
+                />
                 {errorText('date')}
               </div>
               <div className="sm:col-span-2">

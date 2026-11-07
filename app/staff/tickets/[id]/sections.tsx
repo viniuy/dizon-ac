@@ -81,10 +81,10 @@ export async function SchedulePanel({ availability, ...props }: {
 }
 
 /** On a finished job: the back-job form, or the open back job if there already is one */
-export async function BackjobPanel({ id, links }: { id: string; links: Links }) {
+export async function BackjobPanel({ id, links, underWarranty }: { id: string; links: Links; underWarranty: boolean }) {
   const { backjobs } = await links
   const open = backjobs.find(b => isOpen(b.status))
-  if (!open) return <BackjobForm id={id} />
+  if (!open) return <BackjobForm id={id} underWarranty={underWarranty} />
   return (
     <div className="space-y-3">
       <p className="text-sm">

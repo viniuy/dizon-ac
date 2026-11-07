@@ -11,13 +11,14 @@ import { customerHistory } from '@/lib/customers'
 import { getStage, STAGES } from '@/lib/stage'
 import { requireStaff } from '@/lib/staff'
 import { cn } from '@/lib/utils'
-import { CANCELLATION_REASONS, formatTime, SOURCE_LABEL, type Ticket, type TicketStatus } from '@/lib/tickets'
+import { CANCELLATION_REASONS, formatTime, isClosedDay, SOURCE_LABEL, type Ticket, type TicketStatus } from '@/lib/tickets'
 import { CardSkeleton, ScheduleSkeleton } from '../../skeletons'
 import { StageBadge } from '../../ui'
 import { DetailsCard } from './DetailsCard'
 import { Group, HAIRLINE, REVEAL, ROW_PRESS, STAGGER } from '../../ios'
 import { BackjobLinks, BackjobPanel, HistorySection, ReturningBadge, SchedulePanel } from './sections'
-import { CancelForm, CompleteButton, NotesForm } from './TicketForms'
+import { FollowUpPicker } from './FollowUpCard'
+import { CancelForm, CompleteButton, NotesForm, WarrantyCard } from './TicketForms'
 
 const minutes = (time: string) => Number(time.slice(0, 2)) * 60 + Number(time.slice(3, 5))
 
@@ -58,7 +59,7 @@ export default async function TicketPage({ params }: PageProps<'/staff/tickets/[
     supabase.from('tickets').select('id,ticket_ref,status').eq('parent_ticket_id', t.id).order('created_at').returns<{ id: string; ticket_ref: string; status: TicketStatus }[]>(),
   ]).then(([p, c]) => ({ parent: p?.data ?? null, backjobs: c.data ?? [] }))
   // Availability for the date the scheduling picker opens on
-  const pickDate = t.scheduled_date ?? (t.preferred_date && t.preferred_date >= todayPH() ? t.preferred_date : '')
+  const pickDate = t.scheduled_date ?? (t.preferred_date && t.preferred_date >= todayPH() && !isClosedDay(t.preferred_date) ? t.preferred_date : '')
   const availability = t.status === 'pending_confirmation' || t.status === 'confirmed'
     ? Promise.all([
         monthLoad(supabase, (pickDate || todayPH()).slice(0, 7), t.id),
@@ -132,7 +133,7 @@ export default async function TicketPage({ params }: PageProps<'/staff/tickets/[
                     </p>
                   )}
                 </div>
-                <CompleteButton id={t.id} variant={stage === 'needs_closing' || stage === 'in_progress' ? 'default' : 'outline'} className="w-full sm:w-56" />
+                <CompleteButton job={{ id: t.id, name: t.contact_name, service: t.service_type, jobDate: t.scheduled_date, phone: t.contact_number }} variant={stage === 'needs_closing' || stage === 'in_progress' ? 'default' : 'outline'} className="w-full sm:w-56" />
               </div>
               <details className={cn('group border-t', HAIRLINE)}>
                 <summary className={cn('flex cursor-pointer list-none items-center justify-between px-5 py-3 text-[15px] text-primary', ROW_PRESS)}>
@@ -156,6 +157,32 @@ export default async function TicketPage({ params }: PageProps<'/staff/tickets/[
           )}
 
           {finished && (
+            <Group title="Warranty" bodyClassName="p-5">
+              <WarrantyCard
+                key={`${t.warranty_days}-${t.warranty_until}`}
+                id={t.id}
+                service={t.service_type}
+                jobDate={t.scheduled_date ?? t.completed_at?.slice(0, 10) ?? todayPH()}
+                days={t.warranty_days}
+                until={t.warranty_until}
+              />
+            </Group>
+          )}
+
+          {finished && (
+            <Group title="Rebook reminder" bodyClassName="p-5">
+              <FollowUpPicker
+                key={`${t.follow_up_date}-${t.follow_up_done_at}`}
+                id={t.id}
+                phone={t.contact_number}
+                jobDate={t.scheduled_date ?? t.completed_at?.slice(0, 10) ?? todayPH()}
+                date={t.follow_up_date}
+                doneAt={t.follow_up_done_at}
+              />
+            </Group>
+          )}
+
+          {finished && (
             <Group
               title="Job done"
               footer="A back job opens a new linked ticket for the return visit, then you pick its schedule."
@@ -163,7 +190,7 @@ export default async function TicketPage({ params }: PageProps<'/staff/tickets/[
             >
               {slot && <p className="mb-4 text-[15px] text-muted-foreground">{slot}</p>}
               <Suspense fallback={<Skeleton className="h-40 w-full" />}>
-                <BackjobPanel id={t.id} links={links} />
+                <BackjobPanel id={t.id} links={links} underWarranty={!!t.warranty_until && t.warranty_until >= todayPH()} />
               </Suspense>
             </Group>
           )}

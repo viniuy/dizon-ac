@@ -15,7 +15,7 @@ import { BackjobTag, StageBadge, StageDot } from './ui'
 
 export type CalendarItem = Pick<
   Ticket,
-  'id' | 'ticket_ref' | 'status' | 'contact_name' | 'service_type' | 'address' | 'preferred_date' | 'scheduled_date' | 'scheduled_start' | 'scheduled_end' | 'created_at' | 'is_backjob'
+  'id' | 'ticket_ref' | 'status' | 'contact_name' | 'contact_number' | 'service_type' | 'address' | 'preferred_date' | 'scheduled_date' | 'scheduled_start' | 'scheduled_end' | 'created_at' | 'is_backjob'
 >
 /** A scheduled job, or a new request shown on the customer's preferred date */
 export type CalendarEntry = CalendarItem & { requested: boolean; stage: Stage }

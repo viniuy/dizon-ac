@@ -1,7 +1,7 @@
 import { Suspense } from 'react'
 import Link from 'next/link'
 import { RiPhoneFill } from '@remixicon/react'
-import { dayLabel, isDate, monthGrid, monthOf, parseMonth, todayPH } from '@/lib/calendar'
+import { dayLabel, isDate, monthGrid, monthOf, parseMonth, todayPH, weekEnd } from '@/lib/calendar'
 import { returningKeys } from '@/lib/customers'
 import { getStage, nowPH, type Stage } from '@/lib/stage'
 import { requireStaff } from '@/lib/staff'
@@ -12,13 +12,15 @@ import { cn } from '@/lib/utils'
 import { ListCardSkeleton } from './skeletons'
 import { GlanceDock, type GlanceRequest } from './GlanceDock'
 import { Group, HAIRLINE, PRESS, ROW_PRESS, STAGGER } from './ios'
-import { QuickDone } from './QuickDone'
+import { QuickCalled, QuickDone } from './QuickDone'
 import { BackjobTag } from './ui'
 
-const COLS = 'id,ticket_ref,status,contact_name,service_type,address,preferred_date,scheduled_date,scheduled_start,scheduled_end,created_at,is_backjob'
+const COLS = 'id,ticket_ref,status,contact_name,contact_number,service_type,address,preferred_date,scheduled_date,scheduled_start,scheduled_end,created_at,is_backjob'
 // New requests also carry what's needed to call and confirm
 const REQUEST_COLS = `${COLS},contact_number,unit_details,problem_description,phone_key`
 type Request = CalendarItem & Pick<Ticket, 'contact_number' | 'unit_details' | 'problem_description' | 'phone_key'>
+const FOLLOW_UP_COLS = 'id,ticket_ref,contact_name,contact_number,service_type,scheduled_date,follow_up_date'
+type FollowUp = Pick<Ticket, 'id' | 'ticket_ref' | 'contact_name' | 'contact_number' | 'service_type' | 'scheduled_date' | 'follow_up_date'>
 
 export default async function CalendarPage({ searchParams }: PageProps<'/staff'>) {
   const params = await searchParams
@@ -71,7 +73,7 @@ type Supabase = Awaited<ReturnType<typeof requireStaff>>['supabase']
 
 /** New requests and confirmed jobs up to today, plus the headline counts */
 async function loadTodo(supabase: Supabase, today: string, now: ReturnType<typeof nowPH>) {
-  const [queue, active] = await Promise.all([
+  const [queue, active, calls] = await Promise.all([
     supabase.from('tickets').select(REQUEST_COLS)
       .eq('status', 'pending_confirmation')
       .order('created_at')
@@ -84,7 +86,16 @@ async function loadTodo(supabase: Supabase, today: string, now: ReturnType<typeo
       .order('scheduled_date').order('scheduled_start')
       .limit(50)
       .returns<CalendarItem[]>(),
+    // Earlier customers to call about rebooking: anything due this week (Sun–Sat), plus any missed
+    supabase.from('tickets').select(FOLLOW_UP_COLS)
+      .not('follow_up_date', 'is', null)
+      .is('follow_up_done_at', null)
+      .lte('follow_up_date', weekEnd(today))
+      .order('follow_up_date')
+      .limit(50)
+      .returns<FollowUp[]>(),
   ])
+  const toCall = calls.data ?? []
   const pending = queue.data ?? []
   const returning = await returningKeys(supabase, pending.map(t => t.phone_key))
   const activeStages = (active.data ?? []).map(t => ({ ...t, stage: getStage(t, now) }))
@@ -96,7 +107,7 @@ async function loadTodo(supabase: Supabase, today: string, now: ReturnType<typeo
     { stage: 'in_progress' as const, count: count('in_progress') },
     { stage: 'today' as const, count: count('today') },
   ]
-  return { pending, returning, toClose, summary }
+  return { pending, returning, toClose, toCall, today, summary }
 }
 type Todo = ReturnType<typeof loadTodo>
 
@@ -136,7 +147,7 @@ function AtAGlanceSkeleton() {
 
 /** Needs approval + Mark as done, in the side panel */
 async function ActionLists({ todo }: { todo: Todo }) {
-  const { pending, returning, toClose } = await todo
+  const { pending, returning, toClose, toCall, today } = await todo
   return (
     <>
       <SideGroup title="Needs approval" count={pending.length} empty="No new requests.">
@@ -152,11 +163,51 @@ async function ActionLists({ todo }: { todo: Todo }) {
                 {t.scheduled_start && `, ${formatTime(t.scheduled_start)}`}
               </span>
             </Link>
-            <QuickDone id={t.id} name={t.contact_name} />
+            <QuickDone job={{ id: t.id, name: t.contact_name, service: t.service_type, jobDate: t.scheduled_date, phone: t.contact_number }} />
           </li>
         ))}
       </SideGroup>
+      {/* Only shown when someone's due, so a quiet day doesn't get an empty box */}
+      {toCall.length > 0 && (
+        <SideGroup title="Call to rebook this week" count={toCall.length} empty="">
+          {toCall.map(t => <FollowUpRow key={t.id} t={t} today={today} />)}
+        </SideGroup>
+      )}
     </>
+  )
+}
+
+/** A past customer to call about their next service */
+function FollowUpRow({ t, today }: { t: FollowUp; today: string }) {
+  const due = t.follow_up_date!
+  const when = due === today
+    ? { text: 'Today', cls: 'bg-[#ff9500] text-white' }
+    : due < today
+      ? { text: `Overdue · ${dayLabel(due, { month: 'short', day: 'numeric' })}`, cls: 'bg-red-100 text-red-800' }
+      : { text: dayLabel(due, { weekday: 'short', month: 'short', day: 'numeric' }), cls: 'bg-[rgb(0_122_255/0.1)] text-primary' }
+  return (
+    <li className={cn('ml-4 flex items-center gap-2 border-t pr-3 first:border-t-0', HAIRLINE)}>
+      <Link href={`/staff/tickets/${t.id}`} className={cn('-ml-4 min-w-0 flex-1 self-stretch py-2.5 pl-4', ROW_PRESS)}>
+        <span className="flex items-center gap-1.5">
+          <span className="truncate text-[15px] font-medium">{t.contact_name}</span>
+          <span className={cn('shrink-0 rounded-full px-1.5 py-px text-[11px] font-medium', when.cls)}>{when.text}</span>
+        </span>
+        <span className="block truncate text-[13px] font-medium text-primary tabular-nums">{t.contact_number}</span>
+        <span className="block truncate text-[12px] text-muted-foreground">
+          {t.service_type}
+          {t.scheduled_date && ` · last ${dayLabel(t.scheduled_date, { month: 'short', day: 'numeric', year: 'numeric' })}`}
+        </span>
+      </Link>
+      <a
+        href={`tel:${t.contact_number.replace(/[\s\-()]/g, '')}`}
+        aria-label={`Call ${t.contact_name} on ${t.contact_number}`}
+        title={`Call ${t.contact_number}`}
+        className={cn('grid size-8 shrink-0 place-items-center rounded-full bg-[#34c759] text-white shadow-[0_4px_12px_-4px_rgb(52_199_89/0.7)]', PRESS)}
+      >
+        <RiPhoneFill className="size-4" aria-hidden />
+      </a>
+      <QuickCalled id={t.id} name={t.contact_name} />
+    </li>
   )
 }
 

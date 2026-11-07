@@ -12,7 +12,7 @@ import {
   Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle,
 } from '@/components/ui/dialog'
 import { dayLabel } from '@/lib/calendar'
-import { formatTime, WORK_END, WORK_START, type DayBooking, type Ticket } from '@/lib/tickets'
+import { CLOSED_WEEKDAYS, formatTime, isClosedDay, WORK_END, WORK_START, type DayBooking, type Ticket } from '@/lib/tickets'
 import { cn } from '@/lib/utils'
 import { SlotsSkeleton } from '../../skeletons'
 import { Group, GroupLabel, HAIRLINE, IOS_TYPE, REVEAL, Segmented, SHEET, TextButton } from '../../ios'
@@ -122,7 +122,7 @@ export function ConfirmBooking({ ticket, confirmed, date: initialDate, time: ini
                 defaultMonth={date ? toDate(date) : undefined}
                 onSelect={d => d && pickDate(toISO(d))}
                 onMonthChange={showMonth}
-                disabled={[{ before: startOfToday() }, d => freeMinutes(toISO(d)) < 60]}
+                disabled={[{ before: startOfToday() }, { dayOfWeek: CLOSED_WEEKDAYS }, d => freeMinutes(toISO(d)) < 60]}
                 modifiers={ticket.preferred_date ? { preferred: toDate(ticket.preferred_date)! } : undefined}
                 className="w-full p-0 [--cell-size:--spacing(10)] @lg:[--cell-size:--spacing(9)] @[44rem]:[--cell-size:--spacing(10)]"
                 // iOS Calendar: month name on the left, blue chevrons on the right, caps weekdays
@@ -166,6 +166,8 @@ export function ConfirmBooking({ ticket, confirmed, date: initialDate, time: ini
                             <span className={cn('text-[9px] font-medium', free < WORK_END - WORK_START ? 'text-amber-600' : 'text-emerald-600')}>
                               {freeLabel(free)}
                             </span>
+                          ) : !outside && isClosedDay(toISO(props.day.date)) ? (
+                            <span className="text-[9px] font-medium text-muted-foreground/70">Closed</span>
                           ) : (
                             <span aria-hidden className="h-[9px]" />
                           )}

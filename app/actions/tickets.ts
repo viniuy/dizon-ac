@@ -5,10 +5,11 @@ import { redirect } from 'next/navigation'
 import { deleteBookingEvent, upsertBookingEvent } from '@/lib/google-calendar'
 import { dayBookings, monthLoad } from '@/lib/availability'
 import { customerHistory, phoneKey } from '@/lib/customers'
+import { addDays, addMonths, isDate, todayPH } from '@/lib/calendar'
 import { validateBooking, type BookingErrors, type BookingForm } from '@/lib/booking'
 import { requireStaff } from '@/lib/staff'
 import {
-  CANCELLATION_REASONS, MANUAL_SOURCES, type CancellationReason, type DayBooking, type Ticket, type TicketSource,
+  CANCELLATION_REASONS, FINISHED_STATUSES, isClosedDay, MANUAL_SOURCES, type CancellationReason, type DayBooking, type Ticket, type TicketSource,
 } from '@/lib/tickets'
 
 export type TicketActionState = { error?: string; ok?: string }
@@ -47,6 +48,7 @@ export async function scheduleTicket(id: string, _prev: TicketActionState, formD
   const hours = Number(formData.get('hours') ?? 0)
   if (!/^\d{4}-\d{2}-\d{2}$/.test(date) || !/^\d{2}:\d{2}$/.test(time)) return { error: 'Pick a date and start time.' }
   if (!(hours > 0 && hours <= 12)) return { error: 'Duration must be between 0.5 and 12 hours.' }
+  if (isClosedDay(date)) return { error: 'No jobs on Sundays. Pick another day.' }
 
   // Schedules are stored as a Philippine-time date plus start/end times, so jobs can't run past midnight
   const [h, m] = time.split(':').map(Number)
@@ -91,12 +93,25 @@ export async function scheduleTicket(id: string, _prev: TicketActionState, formD
   return done(ticket.status === 'confirmed' ? 'Rescheduled and calendar updated.' : 'Confirmed and added to Bookings.')
 }
 
-export async function completeTicket(id: string): Promise<TicketActionState> {
+/** The warranty columns for a job: covered from its date through the last warranty day */
+function warrantyFor(ticket: Ticket, days: number) {
+  if (days !== 7 && days !== 90) return { warranty_days: null, warranty_until: null }
+  return { warranty_days: days, warranty_until: addDays(ticket.scheduled_date ?? todayPH(), days) }
+}
+
+/** Close a job and set its warranty (7 days cleaning, 90 days repair, 0 for none) */
+export async function completeTicket(id: string, warrantyDays: number): Promise<TicketActionState> {
+  if (![0, 7, 90].includes(warrantyDays)) return { error: 'Choose a warranty.' }
   const { supabase, userId, ticket } = await loadTicket(id)
   if (ticket.status !== 'confirmed') return { error: 'Only confirmed tickets can be marked completed.' }
   const { error } = await supabase
     .from('tickets')
-    .update({ status: 'completed', completed_at: new Date().toISOString(), completed_by: userId })
+    .update({
+      status: 'completed',
+      completed_at: new Date().toISOString(),
+      completed_by: userId,
+      ...warrantyFor(ticket, warrantyDays),
+    })
     .eq('id', id)
   return error ? { error: 'Couldn’t update the ticket.' } : done('Marked as completed.')
 }
@@ -315,4 +330,49 @@ export async function lookupCustomer(phone: string): Promise<CustomerMatch> {
   return last
     ? { name: last.contact_name, phone: last.contact_number, address: last.address, count: samePhone.length, lastService: last.service_type, lastTicketId: last.id }
     : null
+}
+
+/**
+ * Remind staff to call this customer about booking again, a few months after the job
+ * (counted from the job's date), or on a date they pick.
+ */
+export async function setFollowUp(id: string, choice: { months: number } | { date: string }): Promise<TicketActionState> {
+  const { supabase, ticket } = await loadTicket(id)
+  if (!FINISHED_STATUSES.includes(ticket.status)) return { error: 'Set a reminder once the job is done.' }
+
+  let date: string
+  if ('months' in choice) {
+    if (!Number.isInteger(choice.months) || choice.months < 1 || choice.months > 24) return { error: 'Pick how many months.' }
+    date = addMonths(ticket.scheduled_date ?? todayPH(), choice.months)
+  } else {
+    if (!isDate(choice.date)) return { error: 'Pick a date.' }
+    date = choice.date
+  }
+  if (date <= todayPH()) return { error: 'Pick a date after today.' }
+
+  const { error } = await supabase.from('tickets').update({ follow_up_date: date, follow_up_done_at: null }).eq('id', id)
+  return error ? { error: 'Couldn’t save the reminder.' } : done('Reminder set.')
+}
+
+export async function clearFollowUp(id: string): Promise<TicketActionState> {
+  const { supabase } = await loadTicket(id)
+  const { error } = await supabase.from('tickets').update({ follow_up_date: null, follow_up_done_at: null }).eq('id', id)
+  return error ? { error: 'Couldn’t remove the reminder.' } : done('Reminder removed.')
+}
+
+/** The follow-up call was made: it drops off the dashboard */
+export async function completeFollowUp(id: string): Promise<TicketActionState> {
+  const { supabase, ticket } = await loadTicket(id)
+  if (!ticket.follow_up_date) return { error: 'There’s no reminder on this job.' }
+  const { error } = await supabase.from('tickets').update({ follow_up_done_at: new Date().toISOString() }).eq('id', id)
+  return error ? { error: 'Couldn’t update the reminder.' } : done('Marked as called.')
+}
+
+/** Change the warranty on a finished job (e.g. one closed before warranties existed) */
+export async function setWarranty(id: string, warrantyDays: number): Promise<TicketActionState> {
+  if (![0, 7, 90].includes(warrantyDays)) return { error: 'Choose a warranty.' }
+  const { supabase, ticket } = await loadTicket(id)
+  if (!FINISHED_STATUSES.includes(ticket.status)) return { error: 'Set a warranty once the job is done.' }
+  const { error } = await supabase.from('tickets').update(warrantyFor(ticket, warrantyDays)).eq('id', id)
+  return error ? { error: 'Couldn’t save the warranty.' } : done(warrantyDays ? 'Warranty saved.' : 'Warranty removed.')
 }

@@ -21,6 +21,18 @@ export function addDays(d: string, n: number) {
   return fromUTC(x)
 }
 
+/** Same day n months later, clamped to the month's last day (Aug 31 + 6 → Feb 28) */
+export function addMonths(d: string, n: number) {
+  const [y, m, day] = d.split('-').map(Number)
+  const target = new Date(Date.UTC(y, m - 1 + n, 1))
+  const last = new Date(Date.UTC(target.getUTCFullYear(), target.getUTCMonth() + 1, 0)).getUTCDate()
+  target.setUTCDate(Math.min(day, last))
+  return fromUTC(target)
+}
+
+/** Saturday of the week (Sunday first, like the calendar) that a date falls in */
+export const weekEnd = (d: string) => addDays(d, 6 - toUTC(d).getUTCDay())
+
 export const monthOf = (d: string) => d.slice(0, 7)
 
 export function parseMonth(param: unknown, fallback: string) {
